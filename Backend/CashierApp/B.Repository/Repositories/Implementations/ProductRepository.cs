@@ -9,7 +9,7 @@ public class ProductRepository : IProductRepository
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Product entity)
+    public Task DeleteAsync(int id)
     {
         throw new NotImplementedException();
     }
@@ -24,7 +24,7 @@ public class ProductRepository : IProductRepository
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(Product entity)
+    public Task UpdateAsync(int id, Product entity)
     {
         throw new NotImplementedException();
     }

@@ -7,5 +7,7 @@ public interface ICustomerService
     Task CreateAsync(CustomerCreateDTO customerCreateDTO);
     Task<List<CustomerGetDTO>> GetAllAsync();
     Task<CustomerGetDTO> GetByIdAsync(int id);
+    Task DeleteAsync(int id);
+    Task UpdateAsync(int id, CustomerUpdateDTO customerUpdateDTO);
    
 }

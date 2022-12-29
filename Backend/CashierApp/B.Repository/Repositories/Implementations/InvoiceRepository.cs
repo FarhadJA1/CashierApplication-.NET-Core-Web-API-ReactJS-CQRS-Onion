@@ -12,7 +12,7 @@ namespace B.Repository.Repositories.Implementations
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(InvoiceBase entity)
+        public Task DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -27,7 +27,7 @@ namespace B.Repository.Repositories.Implementations
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(InvoiceBase entity)
+        public Task UpdateAsync(int id, InvoiceBase entity)
         {
             throw new NotImplementedException();
         }

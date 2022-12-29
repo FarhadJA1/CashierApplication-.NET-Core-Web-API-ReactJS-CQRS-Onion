@@ -3,23 +3,32 @@ using B.Repository.Repositories.Interfaces;
 using Dapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using static Dapper.SqlMapper;
 
 namespace B.Repository.Repositories.Implementations;
 public class CustomerRepository : ICustomerRepository
 {
-    
+
     public Task CreateAsync(Customer entity)
     {
         AppDbContext.OpenConnection();
         AppDbContext.sqlConnection.Query<Customer>(@"INSERT INTO [dbo].[Customers] ([Name], [Surname], [PhoneNumber])
-                                                          VALUES (@Name,@Surname,@PhoneNumber)", entity);
+                                                     VALUES (@Name,@Surname,@PhoneNumber)"
+                                                     ,new {entity.Name, entity.Surname, entity.PhoneNumber});
         AppDbContext.CloseConnection();
         return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(Customer entity)
+    public Task DeleteAsync(int id)    
     {
-        throw new NotImplementedException();
+
+        AppDbContext.OpenConnection();
+        AppDbContext.sqlConnection.Query<Customer>(@$"DELETE FROM Customers
+                                                      WHERE Id = {id}")
+                                                      .FirstOrDefault();
+        AppDbContext.CloseConnection();
+        return Task.CompletedTask;
+
     }
 
     public Task<List<Customer>> GetAllAsync()
@@ -34,7 +43,8 @@ public class CustomerRepository : ICustomerRepository
     {
         AppDbContext.OpenConnection();
         Customer? customer = AppDbContext.sqlConnection.Query<Customer>(@$"SELECT * FROM Customers
-                                                                            WHERE Id = {id}").FirstOrDefault();
+                                                                            WHERE Id = {id}")
+                                                                            .FirstOrDefault();
         AppDbContext.CloseConnection();
 
         if (customer != null)
@@ -49,8 +59,13 @@ public class CustomerRepository : ICustomerRepository
 
     }
 
-    public Task UpdateAsync(Customer entity)
+    public Task UpdateAsync(int id,Customer entity)
     {
-        throw new NotImplementedException();
+        AppDbContext.OpenConnection();
+        AppDbContext.sqlConnection.Query<Customer>(@"UPDATE Customers
+                                                      SET Name=@Name,Surname=@Surname,PhoneNumber=@PhoneNumber
+                                                      WHERE Id=@id",new { entity.Name, entity.Surname, entity.PhoneNumber, id });
+        AppDbContext.CloseConnection();
+        return Task.CompletedTask;
     }
 }

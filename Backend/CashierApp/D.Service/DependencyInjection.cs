@@ -12,7 +12,8 @@ public static class DependencyInjection
     {
         services.AddAutoMapper(typeof(MappingProfile));
 
-        services.AddScoped<ICustomerService, CustomerService>();        
+        services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<IMeasureUnitService, MeasureUnitService>();
         return services;
     }
 

@@ -18,13 +18,12 @@ public class CustomerService : ICustomerService
 
     public async Task CreateAsync(CustomerCreateDTO customerCreateDTO)
     {
-        Customer customer = new() 
-        { 
-            Name= customerCreateDTO.Name,
-            Surname=customerCreateDTO.Surname,
-            PhoneNumber=customerCreateDTO.PhoneNumber
-        };
-        await _customerRepository.CreateAsync(customer); 
+        await _customerRepository.CreateAsync(_mapper.Map<Customer>(customerCreateDTO)); 
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        await _customerRepository.DeleteAsync(id);
     }
 
     public async Task<List<CustomerGetDTO>> GetAllAsync()
@@ -37,5 +36,12 @@ public class CustomerService : ICustomerService
     {
         Customer customer = await _customerRepository.GetAsync(id);
         return _mapper.Map<CustomerGetDTO>(customer);
+    }
+
+    public async Task UpdateAsync(int id, CustomerUpdateDTO customerUpdateDTO)
+    {
+        Customer customer = new();
+        _mapper.Map(customerUpdateDTO,customer);
+        await _customerRepository.UpdateAsync(id, customer);
     }
 }
