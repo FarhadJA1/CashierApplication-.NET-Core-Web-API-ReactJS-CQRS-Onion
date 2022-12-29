@@ -13,6 +13,7 @@ public class CustomerRepository : ICustomerRepository
         AppDbContext.OpenConnection();
         AppDbContext.sqlConnection.Query<Customer>(@"INSERT INTO [dbo].[Customers] ([Name], [Surname], [PhoneNumber])
                                                           VALUES (@Name,@Surname,@PhoneNumber)", entity);
+        AppDbContext.CloseConnection();
         return Task.CompletedTask;
     }
 
@@ -23,12 +24,29 @@ public class CustomerRepository : ICustomerRepository
 
     public Task<List<Customer>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        AppDbContext.OpenConnection();
+        List<Customer> customers = AppDbContext.sqlConnection.Query<Customer>(@"SELECT * FROM [dbo].[Customers]").ToList();
+        AppDbContext.CloseConnection();
+        return Task.FromResult(customers);
     }
 
     public Task<Customer> GetAsync(int id)
     {
-        throw new NotImplementedException();
+        AppDbContext.OpenConnection();
+        Customer? customer = AppDbContext.sqlConnection.Query<Customer>(@$"SELECT * FROM Customers
+                                                                            WHERE Id = {id}").FirstOrDefault();
+        AppDbContext.CloseConnection();
+
+        if (customer != null)
+        {
+            return Task.FromResult(customer);
+        }
+        else
+        {
+            throw new NullReferenceException("Customer not found!");
+        }
+        
+
     }
 
     public Task UpdateAsync(Customer entity)

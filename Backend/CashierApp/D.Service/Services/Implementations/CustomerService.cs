@@ -1,5 +1,7 @@
-﻿using B.Repository.Repositories.Interfaces;
+﻿using AutoMapper;
+using B.Repository.Repositories.Interfaces;
 using C.Service.DTOs.CustomerDTos;
+using C.Service.DTOs.CustomerDTOs;
 using C.Service.Services.Interfaces;
 using Domain.Entities;
 
@@ -7,9 +9,11 @@ namespace C.Service.Services.Implementations;
 public class CustomerService : ICustomerService
 {
     private readonly ICustomerRepository _customerRepository;
-    public CustomerService(ICustomerRepository customerRepository)
+    private readonly IMapper _mapper;
+    public CustomerService(ICustomerRepository customerRepository, IMapper mapper)
     {
         _customerRepository = customerRepository;
+        _mapper = mapper;
     }
 
     public async Task CreateAsync(CustomerCreateDTO customerCreateDTO)
@@ -20,6 +24,18 @@ public class CustomerService : ICustomerService
             Surname=customerCreateDTO.Surname,
             PhoneNumber=customerCreateDTO.PhoneNumber
         };
-        await _customerRepository.CreateAsync(customer);
+        await _customerRepository.CreateAsync(customer); 
+    }
+
+    public async Task<List<CustomerGetDTO>> GetAllAsync()
+    {
+        List<Customer> customers = await _customerRepository.GetAllAsync();
+        return _mapper.Map<List<CustomerGetDTO>>(customers);
+    }
+
+    public async Task<CustomerGetDTO> GetByIdAsync(int id)
+    {
+        Customer customer = await _customerRepository.GetAsync(id);
+        return _mapper.Map<CustomerGetDTO>(customer);
     }
 }

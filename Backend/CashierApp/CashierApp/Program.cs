@@ -1,24 +1,21 @@
 using B.Repository;
 using C.Service;
-using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddRepositoryLayer();
+builder.Services.AddRepositoryLayer(); 
 builder.Services.AddServiceLayer();
 
-builder.Services.AddMediatR(typeof(Program));
+
+builder.Services.SendAssemblyToMediatr(); //custom addmediatR method at services.DependencyInjection
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

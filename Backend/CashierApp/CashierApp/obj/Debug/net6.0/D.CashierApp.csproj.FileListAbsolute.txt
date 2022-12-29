@@ -80,3 +80,5 @@ C:\Users\ASUS\Desktop\Task - CashierApp\Backend\CashierApp\CashierApp\obj\Debug\
 C:\Users\ASUS\Desktop\Task - CashierApp\Backend\CashierApp\CashierApp\obj\Debug\net6.0\D.CashierApp.pdb
 C:\Users\ASUS\Desktop\Task - CashierApp\Backend\CashierApp\CashierApp\obj\Debug\net6.0\D.CashierApp.genruntimeconfig.cache
 C:\Users\ASUS\Desktop\Task - CashierApp\Backend\CashierApp\CashierApp\obj\Debug\net6.0\ref\D.CashierApp.dll
+C:\Users\ASUS\Desktop\Task - CashierApp\Backend\CashierApp\CashierApp\bin\Debug\net6.0\AutoMapper.dll
+C:\Users\ASUS\Desktop\Task - CashierApp\Backend\CashierApp\CashierApp\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
