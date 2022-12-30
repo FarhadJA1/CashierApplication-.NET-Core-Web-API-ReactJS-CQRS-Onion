@@ -3,6 +3,7 @@ using C.Service.Services.Implementations;
 using C.Service.Services.Interfaces;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Reflection;
 
 namespace C.Service;
@@ -14,6 +15,7 @@ public static class DependencyInjection
 
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IMeasureUnitService, MeasureUnitService>();
+        services.TryAddScoped<IProductService, ProductService>();
         return services;
     }
 

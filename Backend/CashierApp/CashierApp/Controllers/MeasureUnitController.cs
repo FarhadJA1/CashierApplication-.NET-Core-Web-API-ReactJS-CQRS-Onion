@@ -18,12 +18,8 @@ public class MeasureUnitController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateMeasureUnitDTO createMeasureUnitDTO)
+    public async Task<IActionResult> Create([FromBody] CreateMeasureUnitCommand createMeasureUnitCommand)
     {
-        CreateMeasureUnitCommand createMeasureUnitCommand = new()
-        {
-            Name = createMeasureUnitDTO.Name            
-        };
         return Ok(await _mediator.Send(createMeasureUnitCommand));
     }
 
@@ -52,13 +48,8 @@ public class MeasureUnitController : BaseController
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateMeasureUnitDTO updateMeasureUnitDTO)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateMeasureUnitCommand updateMeasureUnitCommand)
     {
-        UpdateMeasureUnitCommand updateMeasureUnitCommand = new()
-        {
-            Id = id,
-            UpdateDTO= updateMeasureUnitDTO
-        };
         return Ok(await _mediator.Send(updateMeasureUnitCommand));
     }
 }

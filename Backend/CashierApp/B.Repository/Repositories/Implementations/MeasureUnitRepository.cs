@@ -1,46 +1,49 @@
-﻿using B.Repository.Data;
-using B.Repository.Repositories.Interfaces;
+﻿using B.Repository.Repositories.Interfaces;
 using Dapper;
 using Domain.Entities;
+using Microsoft.Data.SqlClient;
 
 namespace B.Repository.Repositories.Implementations;
 public class MeasureUnitRepository : IMeasureUnitRepository
 {
     public Task CreateAsync(MeasureUnit entity)
     {
-        AppDbContext.OpenConnection();
-        AppDbContext.sqlConnection.Query<MeasureUnit>(@"INSERT INTO [dbo].[MeasureUnits] ([Name])
-                                                     VALUES (@Name)"
-                                                     , new { entity.Name});
-        AppDbContext.CloseConnection();
+        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
+                                                            Integrated Security=True;");
+
+        connection.Query<MeasureUnit>(@"INSERT INTO [dbo].[MeasureUnits] ([Name])
+                                        VALUES (@Name)",
+                                        new { entity.Name});
         return Task.CompletedTask;
     }
 
     public Task DeleteAsync(int id)
     {
-        AppDbContext.OpenConnection();
-        AppDbContext.sqlConnection.Query<MeasureUnit>(@$"DELETE FROM MeasureUnits
-                                                         WHERE Id = {id}")
+        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
+                                                            Integrated Security=True;");
+        connection.Query<MeasureUnit>(@"DELETE FROM MeasureUnits
+                                        WHERE Id = @id", new { id })
                                                       .FirstOrDefault();
-        AppDbContext.CloseConnection();
         return Task.CompletedTask;
     }
 
     public Task<List<MeasureUnit>> GetAllAsync()
     {
-        AppDbContext.OpenConnection();
-        List<MeasureUnit> measureUnits = AppDbContext.sqlConnection.Query<MeasureUnit>(@"SELECT * FROM [dbo].[MeasureUnits]").ToList();
-        AppDbContext.CloseConnection();
+        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
+                                                            Integrated Security=True;");
+        List<MeasureUnit> measureUnits = connection.Query<MeasureUnit>(@"SELECT * FROM [dbo].[MeasureUnits]").ToList();
         return Task.FromResult(measureUnits);
     }
 
     public Task<MeasureUnit> GetAsync(int id)
     {
-        AppDbContext.OpenConnection();
-        MeasureUnit? measureUnit = AppDbContext.sqlConnection.Query<MeasureUnit>(@$"SELECT * FROM MeasureUnits
-                                                                                    WHERE Id = {id}")
-                                                                                    .FirstOrDefault();
-        AppDbContext.CloseConnection();
+        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
+                                                            Integrated Security=True;");
+
+        MeasureUnit? measureUnit = connection.Query<MeasureUnit>(@"SELECT * FROM MeasureUnits
+                                                                   WHERE Id = @id", new { id })
+                                                                   .FirstOrDefault();
+        
 
         if (measureUnit != null)
         {
@@ -54,12 +57,12 @@ public class MeasureUnitRepository : IMeasureUnitRepository
 
     public Task UpdateAsync(int id, MeasureUnit entity)
     {
-        AppDbContext.OpenConnection();
-        AppDbContext.sqlConnection.Query<MeasureUnit>(@"UPDATE MeasureUnits
-                                                      SET Name = @Name
-                                                      WHERE Id = @id", 
-                                                      new { entity.Name,id });
-        AppDbContext.CloseConnection();
+        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
+                                                            Integrated Security=True;");
+        connection.Query<MeasureUnit>(@"UPDATE MeasureUnits
+                                        SET Name = @Name
+                                        WHERE Id = @id", 
+                                        new { entity.Name,id });        
         return Task.CompletedTask;
     }
 }

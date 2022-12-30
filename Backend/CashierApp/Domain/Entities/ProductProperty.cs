@@ -1,6 +1,7 @@
 ﻿namespace Domain.Entities;
 public sealed class ProductProperty
 {
+    public int Id { get; set; }
     public int ProductId { get; set; }   
     public int MeasureUnitId { get; set; }   
     public decimal PurchasePrice { get; set; }

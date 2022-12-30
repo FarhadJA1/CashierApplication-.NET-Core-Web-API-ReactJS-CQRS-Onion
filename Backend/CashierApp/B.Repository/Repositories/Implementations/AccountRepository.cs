@@ -1,5 +1,4 @@
-﻿using B.Repository.Data;
-using B.Repository.Repositories.Interfaces;
+﻿using B.Repository.Repositories.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

@@ -16,14 +16,8 @@ public class CustomerController : BaseController
     }
 
     [HttpPost]    
-    public async Task<IActionResult> Create([FromBody] CustomerCreateDTO customerCreateDTO)
-    {
-        CreateCustomerCommand createCustomerCommand = new CreateCustomerCommand()
-        {
-             Name = customerCreateDTO.Name,
-             Surname = customerCreateDTO.Surname,
-             PhoneNumber = customerCreateDTO.PhoneNumber,
-        };
+    public async Task<IActionResult> Create([FromBody] CreateCustomerCommand createCustomerCommand)
+    {        
         return Ok(await _mediator.Send(createCustomerCommand));
     }
 
@@ -52,13 +46,8 @@ public class CustomerController : BaseController
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CustomerUpdateDTO customerUpdateDTO)
-    {
-        UpdateCustomerCommand updateCustomerCommand = new()
-        {
-            Id=id,
-            UpdateDTO=customerUpdateDTO
-        };
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCustomerCommand updateCustomerCommand)
+    {        
         return Ok(await _mediator.Send(updateCustomerCommand));
     }
 

@@ -1,5 +1,4 @@
 ﻿using A.Domain.Common;
-using B.Repository.Data;
 using B.Repository.Repositories.Interfaces;
 
 namespace B.Repository.Repositories.Implementations
