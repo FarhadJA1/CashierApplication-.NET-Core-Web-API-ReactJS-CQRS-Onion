@@ -47,9 +47,9 @@ public class MeasureUnitController : BaseController
         return Ok(await _mediator.Send(deleteMeasureUnitCommand));
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateMeasureUnitCommand updateMeasureUnitCommand)
-    {
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateMeasureUnitCommand updateMeasureUnitCommand)
+    {        
         return Ok(await _mediator.Send(updateMeasureUnitCommand));
     }
 }

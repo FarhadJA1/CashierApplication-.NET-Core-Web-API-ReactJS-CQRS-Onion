@@ -2,7 +2,6 @@
 using Dapper;
 using Domain.Entities;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using static Dapper.SqlMapper;
 
 namespace B.Repository.Repositories.Implementations;

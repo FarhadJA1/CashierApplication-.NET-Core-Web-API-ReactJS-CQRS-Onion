@@ -46,5 +46,19 @@ public class ProductController : BaseController
         return Ok(await _mediator.Send(deleteProductCommand));
     }
 
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateProductCommand updateProductCommand)
+    {        
+        return Ok(await _mediator.Send(updateProductCommand));
+    }
+
+
+    [HttpPut("SetDefault")]
+    public async Task<IActionResult> SetProductPropertyToDefault([FromBody] SetProductPropertyDefaultCommand setProductPropertyDefaultCommand)
+    {
+        return Ok(await _mediator.Send(setProductPropertyDefaultCommand));
+    }
+
+    
 
 }

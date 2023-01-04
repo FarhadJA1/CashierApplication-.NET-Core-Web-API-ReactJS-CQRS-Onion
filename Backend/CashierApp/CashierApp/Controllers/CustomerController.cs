@@ -1,7 +1,5 @@
 ﻿using C.Service.CQRS.Commands.CustomerCommands;
 using C.Service.CQRS.Queries.CustomerQueries;
-using C.Service.DTOs.CustomerDTos;
-using C.Service.DTOs.CustomerDTOs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,9 +43,9 @@ public class CustomerController : BaseController
         return Ok(await _mediator.Send(deleteCustomerCommand));
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCustomerCommand updateCustomerCommand)
-    {        
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateCustomerCommand updateCustomerCommand)
+    {                
         return Ok(await _mediator.Send(updateCustomerCommand));
     }
 

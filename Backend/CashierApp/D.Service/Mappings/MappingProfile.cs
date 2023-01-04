@@ -1,6 +1,9 @@
-﻿using AutoMapper;
+﻿using A.Domain.Common;
+using A.Domain.Entities;
+using AutoMapper;
 using C.Service.DTOs.CustomerDTos;
 using C.Service.DTOs.CustomerDTOs;
+using C.Service.DTOs.InvoiceDTOs;
 using C.Service.DTOs.MeasureUnitDTOs;
 using C.Service.DTOs.ProductDTOs;
 using Domain.Entities;
@@ -23,5 +26,10 @@ public class MappingProfile : Profile
         CreateMap<Product, CreateProductDTO>().ReverseMap();
         CreateMap<Product, ProductGetDTO>();
         CreateMap<ProductProperty, ProductPropertiesGetDto>();
+        CreateMap<Product,UpdateProductDTO>().ReverseMap();
+        CreateMap<ProductProperty,UpdateProductPropertiesDTO>().ReverseMap();
+
+        CreateMap<ImportInvoice, CreateInvoiceDTO>().ReverseMap();
+        CreateMap<InvoiceDetail,CreateInvoiceDetailsDTO>().ReverseMap();
     }
 }

@@ -36,11 +36,12 @@ public class ProductRepository : IProductRepository
         using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
                                                             Integrated Security=True;");
 
-        string sql = @"SELECT * FROM [dbo].[ProductProperties] prop INNER JOIN [dbo].[Products] product ON prop.ProductId = product.Id";
+        string sql = @"SELECT * FROM ([dbo].[ProductProperties] prop JOIN [dbo].[MeasureUnits] measure ON prop.MeasureUnitId = measure.Id) INNER JOIN [dbo].[Products] product ON prop.ProductId = product.Id";
 
-        List<ProductProperty> productProperties = connection.Query<ProductProperty,Product, ProductProperty>(sql, (m,x) =>
+        List<ProductProperty> productProperties = connection.Query<ProductProperty,Product, MeasureUnit,ProductProperty>(sql, (m,x,y) =>
         {         
             m.Product = x;
+            m.MeasureUnit= y;
             return m;
         }).ToList();
 
@@ -54,14 +55,16 @@ public class ProductRepository : IProductRepository
         using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
                                                             Integrated Security=True;");
 
-        string sql = @"SELECT * FROM [dbo].[ProductProperties] prop 
+        string sql = @"SELECT * FROM ([dbo].[ProductProperties] prop 
+                       JOIN [dbo].[MeasureUnits] measure ON prop.MeasureUnitId = measure.Id)
                        INNER JOIN [dbo].[Products] product 
                        ON prop.ProductId = product.Id                        
                       ";
 
-        List<ProductProperty> productProperties = connection.Query<ProductProperty, Product, ProductProperty>(sql, (m, x) =>
+        List<ProductProperty> productProperties = connection.Query<ProductProperty, Product, MeasureUnit,ProductProperty>(sql, (m, x,y) =>
         {
             m.Product = x;
+            m.MeasureUnit= y;
             return m;
         }).ToList();
 
@@ -78,10 +81,45 @@ public class ProductRepository : IProductRepository
         }
     }
 
-
-    public Task UpdateAsync(int id, Product entity)
+   
+    public Task SetProductPropertyToDefaultAsync(int productId, int measureUnitId, bool isDefault)
     {
-        throw new NotImplementedException();
+        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
+                                                            Integrated Security=True;");
+
+        connection.Query(@"UPDATE ProductProperties
+                           SET IsDefault = @isDefault
+                           WHERE ProductId = @productId AND MeasureUnitId = @measureUnitId
+                           ", new { isDefault, productId ,measureUnitId});
+
+        if (isDefault==true)
+        {
+            connection.Query(@"UPDATE ProductProperties
+                           SET IsDefault = 0
+                           WHERE ProductId = @productId AND MeasureUnitId != @measureUnitId
+                           ", new { productId, measureUnitId });
+        }
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateAsync(Product entity,ProductProperty productProperty)
+    {
+        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
+                                                            Integrated Security=True;");
+
+        connection.Query(@"UPDATE Products
+                           SET Name = @Name
+                           WHERE Id = @Id
+
+                           UPDATE ProductProperties
+                           SET MeasureUnitId = @MeasureUnitId, PurchasePrice=@PurchasePrice,
+                               SellingPrice = @SellingPrice, GrossPrice = @GrossPrice
+                           WHERE ProductId = @Id
+                          ", new { entity.Id ,entity.Name , productProperty.MeasureUnitId, productProperty.PurchasePrice,
+                                   productProperty.SellingPrice, productProperty.GrossPrice, productProperty.ProductId });        
+      
+
+        return Task.CompletedTask;
     }
 
 
