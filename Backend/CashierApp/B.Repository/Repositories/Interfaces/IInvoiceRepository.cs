@@ -8,7 +8,6 @@ public interface IInvoiceRepository
 {
     Task CreateAsync(InvoiceBase entity,InvoiceDetail invoiceDetail);
     Task<List<VwInvoice>> GetAllAsync(InvoiceType? type);
-
-
+    Task<List<InvoiceDetail>> GetInvoiceDetailsAsync(int id);
 }
 

@@ -1,7 +1,6 @@
 ﻿using B.Repository.Repositories.Interfaces;
 using Dapper;
 using Domain.Entities;
-using Microsoft.Data.SqlClient;
 
 namespace B.Repository.Repositories.Implementations;
 public class ProductRepository : BaseSqlRepository, IProductRepository
@@ -33,43 +32,26 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
     {
         using var connection = OpenConnection();
 
-        string sql = @"SELECT * FROM ([dbo].[ProductProperties] prop JOIN [dbo].[MeasureUnits] measure ON prop.MeasureUnitId = measure.Id) INNER JOIN [dbo].[Products] product ON prop.ProductId = product.Id";
+        string sql = @"SELECT * FROM [dbo].[Products]";
 
-        List<ProductProperty> productProperties = connection.Query<ProductProperty,Product, MeasureUnit,ProductProperty>(sql, (m,x,y) =>
-        {         
-            m.Product = x;
-            m.MeasureUnit= y;
-            return m;
-        }).ToList();
+        List<Product> products = connection.Query<Product>(sql).ToList();
 
-        List<Product> products = new List<Product>();
-
-        return Task.FromResult(MapListProductPropertyToProduct(products, productProperties));
+        return Task.FromResult(products);
     }
 
     public Task<Product> GetAsync(int id)
     {
         using var connection = OpenConnection();
 
-        string sql = @"SELECT * FROM ([dbo].[ProductProperties] prop 
-                       JOIN [dbo].[MeasureUnits] measure ON prop.MeasureUnitId = measure.Id)
-                       INNER JOIN [dbo].[Products] product 
-                       ON prop.ProductId = product.Id                        
+        string sql = @"SELECT * FROM [dbo].[Products] product                        
+                       WHERE product.Id = @id                      
                       ";
 
-        List<ProductProperty> productProperties = connection.Query<ProductProperty, Product, MeasureUnit,ProductProperty>(sql, (m, x,y) =>
-        {
-            m.Product = x;
-            m.MeasureUnit= y;
-            return m;
-        }).ToList();
-
-        Product? product = connection.Query<Product>("SELECT * FROM [dbo].[Products] WHERE Id = @id", new { id }).FirstOrDefault();
-
+        Product? product = connection.Query<Product>(sql, new { id }).FirstOrDefault(); 
 
         if (product!=null)
         {
-            return Task.FromResult(MapSingleProductPropertyToProduct(product, productProperties));
+            return Task.FromResult(product);
         }
         else
         {
@@ -116,31 +98,30 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
         return Task.CompletedTask;
     }
 
-
-    private List<Product> MapListProductPropertyToProduct(List<Product> products, List<ProductProperty> productProperties)
+    public Task<List<ProductProperty>> GetAllProductPropertiesAsync(int productId)
     {
-        foreach (ProductProperty property in productProperties)
-        {
-            products.Add(property.Product);
-        }
-        foreach (Product product in products)
-        {
-            product.ProductProperties = productProperties;
-        }
-        return products;
-    }
+        using var connection = OpenConnection();
 
-    private Product MapSingleProductPropertyToProduct(Product product, List<ProductProperty> productProperties)
-    {        
-        foreach (var property in productProperties)
-        {
-            if (property.ProductId==product.Id)
-            {
-                product.ProductProperties = productProperties;
-            }
-        }
-        return product;
-    }
+        string sql = @"SELECT * FROM [dbo].[ProductProperties] property INNER JOIN [dbo].[MeasureUnits] unit
+                       ON property.MeasureUnitId = unit.Id
+                       WHERE property.ProductId = @productId";
 
+        List<ProductProperty> productProperties = connection.Query<ProductProperty, MeasureUnit, ProductProperty>(sql, (x, y) =>
+        {
+            x.MeasureUnit = y;
+            return x;
+        },new { productId}).ToList();
+
+        if (productProperties != null)
+        {
+            return Task.FromResult(productProperties);
+        }
+        else
+        {
+            throw new NullReferenceException("Product Properties not found");
+        }
+
+        
+    }
 
 }

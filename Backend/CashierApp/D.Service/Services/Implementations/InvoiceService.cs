@@ -43,4 +43,10 @@ public class InvoiceService : IInvoiceService
         List<VwInvoice> invoices = await _invoiceRepository.GetAllAsync(invoiceType);
         return _mapper.Map<List<InvoiceGetDTO>>(invoices);
     }
+
+    public async Task<List<InvoiceDetailsGetDTO>> GetInvoiceDetailsByIdAsync(int id)
+    {
+        List<InvoiceDetail> invoiceDetails = await _invoiceRepository.GetInvoiceDetailsAsync(id);
+        return _mapper.Map<List<InvoiceDetailsGetDTO>>(invoiceDetails);
+    }
 }

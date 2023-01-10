@@ -31,4 +31,11 @@ public class InvoiceController : BaseController
         
         return Ok(await _mediator.Send(getAllInvoicesQuery));
     }
+
+    [HttpGet("InvoiceDetails/{id}")]
+    public async Task<IActionResult> GetAllInvoiceDetails([FromRoute] int id)
+    {
+        GetInvoiceDetailsByIdQuery getInvoiceDetailsByIdQuery = new() { Id= id };
+        return Ok(await _mediator.Send(getInvoiceDetailsByIdQuery));
+    }
 }

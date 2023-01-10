@@ -51,5 +51,11 @@ public class ProductService : IProductService
         product.Id = id;
         await _productRepository.UpdateAsync(product, productProperty);
     }
+
+    public async Task<List<ProductPropertiesGetDto>> GetAllProductPropertiesById(int productId)
+    {
+        List<ProductProperty> productProperties = await _productRepository.GetAllProductPropertiesAsync(productId);
+        return _mapper.Map<List<ProductPropertiesGetDto>>(productProperties);
+    }
     
 }

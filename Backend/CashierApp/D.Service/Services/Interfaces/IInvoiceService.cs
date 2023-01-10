@@ -7,4 +7,5 @@ public interface IInvoiceService
 {
     Task CreateInvoiceAsync(CreateInvoiceDTO importInvoice, CreateInvoiceDetailsDTO createInvoiceDetailsDTO);
     Task<List<InvoiceGetDTO>> GetAllInvoicesAsync(InvoiceType? invoiceType = null);
+    Task<List<InvoiceDetailsGetDTO>> GetInvoiceDetailsByIdAsync(int id);
 }

@@ -10,6 +10,5 @@ public interface IProductService
     Task DeleteAsync(int id);
     Task UpdateAsync(int id, UpdateProductDTO updateProductDTO,UpdateProductPropertiesDTO updateProductPropertiesDTO);
     Task SetProductPropertyToDefaultAsync(int productId,int measureUnitId, bool isDefault);
-   
-
+    Task<List<ProductPropertiesGetDto>> GetAllProductPropertiesById(int productId);
 }

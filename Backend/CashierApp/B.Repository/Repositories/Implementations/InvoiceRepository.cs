@@ -4,7 +4,6 @@ using A.Domain.Enum;
 using B.Repository.Repositories.Interfaces;
 using Dapper;
 using Domain.Entities;
-using Microsoft.Data.SqlClient;
 
 namespace B.Repository.Repositories.Implementations;
 public class InvoiceRepository : BaseSqlRepository , IInvoiceRepository
@@ -35,34 +34,33 @@ public class InvoiceRepository : BaseSqlRepository , IInvoiceRepository
 
         if (type == null)
         {
-            string sql = @"SELECT * 
+            string sql = @"SELECT Id Id,CreateDate CreationDate,UserId UserId,CustomerId CustomerId,InvoiceType InvoiceTypePtr 
                            FROM [dbo].[Invoices]";
-            List<VwInvoice> invoices = connection.Query<VwInvoice, List<InvoiceDetail>, VwInvoice>(sql, (m, y) =>
-            {
-                m.Details = y;
-                return m;
-            }).ToList();
+            List<VwInvoice> invoices = connection.Query<VwInvoice>(sql).ToList();
 
             return Task.FromResult(invoices);
         }
         else
         {
-            string sql = @"SELECT * FROM [dbo].[Invoices] invoice INNER JOIN [dbo].[InvoiceDetails] detail 
-                           ON invoice.Id = detail.InvoiceId
-                           WHERE invoice.InvoiceType = @type";
-            List<VwInvoice> invoices = connection.Query<VwInvoice, List<InvoiceDetail>, VwInvoice>(sql, (m, y) =>
-            {
-                m.Details = y;
-                return m;
-            }, new { type }).ToList();
+            string sql = @"SELECT Id Id,CreateDate CreationDate,UserId UserId,CustomerId CustomerId,InvoiceType InvoiceTypePtr 
+                           FROM [dbo].[Invoices]                           
+                           WHERE InvoiceType = @type";
+            List<VwInvoice> invoices = connection.Query<VwInvoice>(sql,new { type }).ToList();
 
             return Task.FromResult(invoices);
         }
     }
 
-    public Task<InvoiceBase> GetAsync(int id)
+    public Task<List<InvoiceDetail>> GetInvoiceDetailsAsync(int id)
     {
-        throw new NotImplementedException();
+        using var connection = OpenConnection();
+
+        string sql = @"SELECT * FROM [dbo].[InvoiceDetails] detail
+                       WHERE detail.InvoiceId = @id";
+
+        List<InvoiceDetail> invoiceDetails = connection.Query<InvoiceDetail>(sql,new {id}).ToList();
+
+        return Task.FromResult(invoiceDetails);
     }
 
     
