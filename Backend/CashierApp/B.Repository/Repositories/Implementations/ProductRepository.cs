@@ -120,8 +120,6 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
         {
             throw new NullReferenceException("Product Properties not found");
         }
-
-        
     }
 
 }

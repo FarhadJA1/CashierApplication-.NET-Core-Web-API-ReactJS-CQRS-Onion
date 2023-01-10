@@ -1,0 +1,16 @@
+*{
+  margin: 0;
+  padding: 0; 
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+.col-2{
+  width: 15%;
+}
+.col-10{
+  width: 85%;
+}
+.row{
+  width: 100%;
+  display: flex;
+}

@@ -1,0 +1,22 @@
+.login-inputs-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+
+    .login-inputs {
+        width: 70%;
+        .password-input{
+            margin-top: 20px;
+        }
+        .login-buttons-area{
+            display: flex;
+            justify-content:space-around;
+            margin-top: 20px;
+            .link-button{
+                text-decoration: none;
+            }
+        }
+    }
+}
