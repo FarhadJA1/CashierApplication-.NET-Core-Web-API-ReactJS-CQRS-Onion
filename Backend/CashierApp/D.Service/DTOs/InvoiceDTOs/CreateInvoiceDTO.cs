@@ -7,5 +7,5 @@ public class CreateInvoiceDTO
     public int UserId { get; set; }
     public int CustomerId { get; set; }
 
-    public  InvoiceType InvoiceType { get; }
+    public byte InvoiceType { get; set; }
 }

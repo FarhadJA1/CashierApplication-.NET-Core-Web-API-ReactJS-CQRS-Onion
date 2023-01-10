@@ -4,12 +4,11 @@ using Domain.Entities;
 using Microsoft.Data.SqlClient;
 
 namespace B.Repository.Repositories.Implementations;
-public class ProductRepository : IProductRepository
+public class ProductRepository : BaseSqlRepository, IProductRepository
 {
     public Task CreateAsync(Product entity)
     {        
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         connection.Query<Product>(@"INSERT INTO [dbo].[Products] ([Name], [Barcode])
                                     VALUES (@Name,@Barcode)",
@@ -20,8 +19,7 @@ public class ProductRepository : IProductRepository
 
     public Task DeleteAsync(int id)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
         connection.Query(@"DELETE FROM Products
                            WHERE Id = @id 
                            DELETE FROM ProductProperties
@@ -33,8 +31,7 @@ public class ProductRepository : IProductRepository
 
     public  Task<List<Product>> GetAllAsync()
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         string sql = @"SELECT * FROM ([dbo].[ProductProperties] prop JOIN [dbo].[MeasureUnits] measure ON prop.MeasureUnitId = measure.Id) INNER JOIN [dbo].[Products] product ON prop.ProductId = product.Id";
 
@@ -52,8 +49,7 @@ public class ProductRepository : IProductRepository
 
     public Task<Product> GetAsync(int id)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         string sql = @"SELECT * FROM ([dbo].[ProductProperties] prop 
                        JOIN [dbo].[MeasureUnits] measure ON prop.MeasureUnitId = measure.Id)
@@ -84,8 +80,7 @@ public class ProductRepository : IProductRepository
    
     public Task SetProductPropertyToDefaultAsync(int productId, int measureUnitId, bool isDefault)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         connection.Query(@"UPDATE ProductProperties
                            SET IsDefault = @isDefault
@@ -104,8 +99,7 @@ public class ProductRepository : IProductRepository
 
     public Task UpdateAsync(Product entity,ProductProperty productProperty)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         connection.Query(@"UPDATE Products
                            SET Name = @Name

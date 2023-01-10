@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using B.Repository.Repositories.Implementations;
 using B.Repository.Repositories.Interfaces;
-using C.Service.DTOs.MeasureUnitDTOs;
 using C.Service.DTOs.ProductDTOs;
 using C.Service.Services.Interfaces;
 using Domain.Entities;

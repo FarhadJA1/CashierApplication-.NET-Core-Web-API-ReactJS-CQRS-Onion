@@ -30,6 +30,12 @@ public class MappingProfile : Profile
         CreateMap<ProductProperty,UpdateProductPropertiesDTO>().ReverseMap();
 
         CreateMap<ImportInvoice, CreateInvoiceDTO>().ReverseMap();
+        CreateMap<ReturnInvoice, CreateInvoiceDTO>().ReverseMap();
+        CreateMap<SellingInvoice, CreateInvoiceDTO>().ReverseMap();
+        CreateMap<ImportInvoice, InvoiceGetDTO>();
+        CreateMap<ReturnInvoice, InvoiceGetDTO>();
+        CreateMap<SellingInvoice, InvoiceGetDTO>();
+        CreateMap<VwInvoice,InvoiceGetDTO>();
         CreateMap<InvoiceDetail,CreateInvoiceDetailsDTO>().ReverseMap();
     }
 }

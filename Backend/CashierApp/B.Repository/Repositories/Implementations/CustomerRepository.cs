@@ -5,13 +5,12 @@ using Microsoft.Data.SqlClient;
 using static Dapper.SqlMapper;
 
 namespace B.Repository.Repositories.Implementations;
-public class CustomerRepository : ICustomerRepository
+public class CustomerRepository : BaseSqlRepository,ICustomerRepository
 {
 
     public Task CreateAsync(Customer entity)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         connection.Query<Customer>(@"INSERT INTO [dbo].[Customers] ([Name], [Surname], [PhoneNumber])
                                      VALUES (@Name,@Surname,@PhoneNumber)"
@@ -21,8 +20,7 @@ public class CustomerRepository : ICustomerRepository
 
     public Task DeleteAsync(int id)    
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         connection.Query<Customer>(@"DELETE FROM Customers
                                      WHERE Id = @id", new { id })
@@ -32,8 +30,7 @@ public class CustomerRepository : ICustomerRepository
 
     public Task<List<Customer>> GetAllAsync()
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         List<Customer> customers = connection.Query<Customer>(@"SELECT * FROM [dbo].[Customers]").ToList();
         
@@ -42,8 +39,8 @@ public class CustomerRepository : ICustomerRepository
 
     public Task<Customer> GetAsync(int id)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
+
         Customer? customer = connection.Query<Customer>(@"SELECT * FROM Customers
                                                            WHERE Id = @id", new { id })
                                                            .FirstOrDefault();       
@@ -62,8 +59,7 @@ public class CustomerRepository : ICustomerRepository
 
     public Task UpdateAsync(int id,Customer entity)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         connection.Query<Customer>(@"UPDATE Customers
                                      SET Name=@Name,Surname=@Surname,PhoneNumber=@PhoneNumber

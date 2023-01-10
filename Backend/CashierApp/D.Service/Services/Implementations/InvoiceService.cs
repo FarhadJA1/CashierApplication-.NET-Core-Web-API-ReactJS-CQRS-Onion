@@ -1,4 +1,6 @@
-﻿using A.Domain.Entities;
+﻿using A.Domain.Common;
+using A.Domain.Entities;
+using A.Domain.Enum;
 using AutoMapper;
 using B.Repository.Repositories.Interfaces;
 using C.Service.DTOs.InvoiceDTOs;
@@ -15,8 +17,30 @@ public class InvoiceService : IInvoiceService
         _invoiceRepository = invoiceRepository;
         _mapper = mapper;
     }
-    public async Task CreateImportInvoice(CreateInvoiceDTO createImportInvoice,CreateInvoiceDetailsDTO createInvoiceDetailsDTO)
+    public async Task CreateInvoiceAsync(CreateInvoiceDTO createInvoice,CreateInvoiceDetailsDTO createInvoiceDetailsDTO)
     {
-        await _invoiceRepository.CreateAsync(_mapper.Map<ImportInvoice>(createImportInvoice),_mapper.Map<InvoiceDetail>(createInvoiceDetailsDTO));
+        switch (createInvoice.InvoiceType)
+        {
+            case 1:
+                await _invoiceRepository.CreateAsync(_mapper.Map<SellingInvoice>(createInvoice)
+                                            , _mapper.Map<InvoiceDetail>(createInvoiceDetailsDTO));
+                break;
+            case 2:
+                await _invoiceRepository.CreateAsync(_mapper.Map<ReturnInvoice>(createInvoice)
+                                           , _mapper.Map<InvoiceDetail>(createInvoiceDetailsDTO));
+                break;
+            case 3:
+                await _invoiceRepository.CreateAsync(_mapper.Map<ImportInvoice>(createInvoice)
+                                            , _mapper.Map<InvoiceDetail>(createInvoiceDetailsDTO));
+                break;               
+            default:
+                throw new Exception("Bad Request");                
+        }
+    }
+
+    public async Task<List<InvoiceGetDTO>> GetAllInvoicesAsync(InvoiceType? invoiceType = null)
+    {
+        List<VwInvoice> invoices = await _invoiceRepository.GetAllAsync(invoiceType);
+        return _mapper.Map<List<InvoiceGetDTO>>(invoices);
     }
 }

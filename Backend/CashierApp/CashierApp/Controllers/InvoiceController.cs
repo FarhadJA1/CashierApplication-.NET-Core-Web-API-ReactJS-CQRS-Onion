@@ -1,4 +1,6 @@
-﻿using C.Service.CQRS.Commands.InvoiceCommands;
+﻿using A.Domain.Enum;
+using C.Service.CQRS.Commands.InvoiceCommands;
+using C.Service.CQRS.Queries.InvoiceQueries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +13,22 @@ public class InvoiceController : BaseController
     {
         _mediator = mediator;
     }
-    [HttpPost("Import")]
-    public async Task<IActionResult> Create([FromBody] CreateImportInvoiceCommand createImportInvoiceCommand)
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateInvoiceCommand createImportInvoiceCommand)
     {
         return Ok(await _mediator.Send(createImportInvoiceCommand));
+    }
+
+    [HttpGet("{type?}")]
+    public async Task<IActionResult> GetAll([FromRoute] byte type=0)
+    {
+        GetAllInvoicesQuery getAllInvoicesQuery = new();
+        if (Enum.IsDefined(typeof(InvoiceType),type))
+        {
+            InvoiceType invoiceType = (InvoiceType)type;
+            getAllInvoicesQuery.InvoiceType = invoiceType;
+        }
+        
+        return Ok(await _mediator.Send(getAllInvoicesQuery));
     }
 }

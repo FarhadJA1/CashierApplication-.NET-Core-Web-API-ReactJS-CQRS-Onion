@@ -1,48 +1,69 @@
 ﻿using A.Domain.Common;
+using A.Domain.Entities;
+using A.Domain.Enum;
 using B.Repository.Repositories.Interfaces;
 using Dapper;
 using Domain.Entities;
 using Microsoft.Data.SqlClient;
 
-namespace B.Repository.Repositories.Implementations
+namespace B.Repository.Repositories.Implementations;
+public class InvoiceRepository : BaseSqlRepository , IInvoiceRepository
 {
-    public class InvoiceRepository : IInvoiceRepository
+    public Task CreateAsync(InvoiceBase entity, InvoiceDetail invoiceDetail)
     {
+        using var connection = OpenConnection();
 
-        public Task CreateAsync(InvoiceBase entity, InvoiceDetail invoiceDetail)
+        int invoiceId = connection.QuerySingle<int>(@"INSERT INTO [dbo].[Invoices] 
+                                                        ([CreateDate],[UserId],[CustomerId],[InvoiceType])
+                                                      OUTPUT Inserted.Id
+                                                      VALUES (@CreationDate,@UserId,@CustomerId,@InvoiceType)",
+                                                      new { entity.CreationDate,entity.UserId,entity.CustomerId ,
+                                                            entity.InvoiceType});
+
+        connection.Query<InvoiceBase>(@"INSERT INTO [dbo].[InvoiceDetails] 
+                                          ([InvoiceId],[ProductId],[Price],[MeasureId],[Quantity])
+                                        VALUES (@invoiceId,@productId,@Price,@MeasureId,@Quantity)"
+                                        , new { invoiceId,invoiceDetail.ProductId, invoiceDetail.Price 
+                                        ,invoiceDetail.MeasureId, invoiceDetail.Quantity});
+        return Task.CompletedTask;
+    }
+    
+
+    public Task<List<VwInvoice>> GetAllAsync(InvoiceType? type=null)
+    {
+        using var connection = OpenConnection();
+
+        if (type == null)
         {
-            using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+            string sql = @"SELECT * 
+                           FROM [dbo].[Invoices]";
+            List<VwInvoice> invoices = connection.Query<VwInvoice, List<InvoiceDetail>, VwInvoice>(sql, (m, y) =>
+            {
+                m.Details = y;
+                return m;
+            }).ToList();
 
-            int productId = connection.QuerySingle<int>(@"INSERT INTO [dbo].[Invoices] ([CreateDate],[UserId],[CustomerId],[InvoiceType])
-                                        OUTPUT Inserted.Id
-                                        VALUES (@CreationDate,@UserId,@CustomerId,@InvoiceType)",
-                                        new { entity.CreationDate,entity.UserId,entity.CustomerId ,entity.InvoiceType});
-
-            connection.Query<InvoiceBase>(@"INSERT INTO [dbo].[InvoiceDetails] ([InvoiceId],[ProductId],[Price],[MeasureId],[Quantity]
-                                            VALUES (@InvoiceId,@productId,@Price,@MeasureId,@Quantity))"
-                                            , new { invoiceDetail.InvoiceId,productId, invoiceDetail.Price ,invoiceDetail.MeasureId, invoiceDetail.Quantity});
-            return Task.CompletedTask;
+            return Task.FromResult(invoices);
         }
-
-        public Task DeleteAsync(int id)
+        else
         {
-            throw new NotImplementedException();
-        }
+            string sql = @"SELECT * FROM [dbo].[Invoices] invoice INNER JOIN [dbo].[InvoiceDetails] detail 
+                           ON invoice.Id = detail.InvoiceId
+                           WHERE invoice.InvoiceType = @type";
+            List<VwInvoice> invoices = connection.Query<VwInvoice, List<InvoiceDetail>, VwInvoice>(sql, (m, y) =>
+            {
+                m.Details = y;
+                return m;
+            }, new { type }).ToList();
 
-        public Task<List<InvoiceBase>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InvoiceBase> GetAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(int id, InvoiceBase entity)
-        {
-            throw new NotImplementedException();
+            return Task.FromResult(invoices);
         }
     }
+
+    public Task<InvoiceBase> GetAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    
 }

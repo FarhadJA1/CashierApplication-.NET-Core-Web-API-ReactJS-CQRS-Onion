@@ -4,12 +4,11 @@ using Domain.Entities;
 using Microsoft.Data.SqlClient;
 
 namespace B.Repository.Repositories.Implementations;
-public class MeasureUnitRepository : IMeasureUnitRepository
+public class MeasureUnitRepository : BaseSqlRepository, IMeasureUnitRepository
 {
     public Task CreateAsync(MeasureUnit entity)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         connection.Query<MeasureUnit>(@"INSERT INTO [dbo].[MeasureUnits] ([Name])
                                         VALUES (@Name)",
@@ -19,8 +18,8 @@ public class MeasureUnitRepository : IMeasureUnitRepository
 
     public Task DeleteAsync(int id)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
+
         connection.Query<MeasureUnit>(@"DELETE FROM MeasureUnits
                                         WHERE Id = @id", new { id })
                                                       .FirstOrDefault();
@@ -29,16 +28,15 @@ public class MeasureUnitRepository : IMeasureUnitRepository
 
     public Task<List<MeasureUnit>> GetAllAsync()
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
+
         List<MeasureUnit> measureUnits = connection.Query<MeasureUnit>(@"SELECT * FROM [dbo].[MeasureUnits]").ToList();
         return Task.FromResult(measureUnits);
     }
 
     public Task<MeasureUnit> GetAsync(int id)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
 
         MeasureUnit? measureUnit = connection.Query<MeasureUnit>(@"SELECT * FROM MeasureUnits
                                                                    WHERE Id = @id", new { id })
@@ -57,8 +55,8 @@ public class MeasureUnitRepository : IMeasureUnitRepository
 
     public Task UpdateAsync(int id, MeasureUnit entity)
     {
-        using SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-1NLMPNC\SQLEXPRESS01; initial Catalog=CashierDbDapper;
-                                                            Integrated Security=True;");
+        using var connection = OpenConnection();
+
         connection.Query<MeasureUnit>(@"UPDATE MeasureUnits
                                         SET Name = @Name
                                         WHERE Id = @id", 
