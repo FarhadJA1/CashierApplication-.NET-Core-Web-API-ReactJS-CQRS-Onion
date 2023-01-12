@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "62H4N5P0nY4dR9kARxRIE/vldnFn3XmqvqgQPBDsYUDZWpqfkRyPyaqf+f3znloU4ibu30pfKDlCsMQodFE09g==",
+  "dgSpecHash": "HVam3rD0TmW06UOwbgIVAMyWFd7iP8KN4gAySjpHyu/4RUarfX8pu+MI6uIvOqkyf+rrf/OJwpmjTiY2YEJbEg==",
   "success": true,
   "projectFilePath": "C:\\Users\\ASUS\\Desktop\\Task - CashierApp\\Backend\\CashierApp\\B.Repository\\B.Repository.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ASUS\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\fluentvalidation\\11.4.0\\fluentvalidation.11.4.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.12\\microsoft.aspnetcore.cryptography.internal.6.0.12.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\6.0.12\\microsoft.aspnetcore.cryptography.keyderivation.6.0.12.nupkg.sha512",

@@ -1,12 +1,13 @@
 .sidebar{
     height: 100vh;
-    border-right: 1px solid #5cbdb9;    
-    background-color:  #ebf6f5;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    
     .navigation{
         list-style-type: none;
         .navigation-item{
             margin-top: 10px;            
-            padding-left: 10px;            
+             
+               
             &:hover{
                 color:  #425555 ;
             }
@@ -14,7 +15,7 @@
         .navigation-link{
             width: 100%;
             text-decoration: none;
-            font-size: 23px;
+            font-size: 20px;
             color:  #5cbdb9 ; 
             
         }

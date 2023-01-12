@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "b3Yi10j/t3UDHvXqSqBFzKwRGI7/C+Jn3jNBywKl+Jdjv3Vks2i3nFQbQTbiFOyCKQEAxYVFcAJ2VWofKAqRMg==",
+  "dgSpecHash": "/LF07dYn0SVtc2jYarvaohBt7KI6bAoUDx3HJI7mbTkh87RzsPcBPVnTSHbYQuObZmD8hzIlaKkQxtX8omFJWQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\ASUS\\Desktop\\Task - CashierApp\\Backend\\CashierApp\\CashierApp\\D.CashierApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ASUS\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\fluentvalidation\\11.4.0\\fluentvalidation.11.4.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\mediatr\\11.1.0\\mediatr.11.1.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\mediatr.contracts\\1.0.1\\mediatr.contracts.1.0.1.nupkg.sha512",

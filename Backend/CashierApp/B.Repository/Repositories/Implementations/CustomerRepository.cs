@@ -12,8 +12,8 @@ public class CustomerRepository : BaseSqlRepository,ICustomerRepository
     {
         using var connection = OpenConnection();
 
-        connection.Query<Customer>(@"INSERT INTO [dbo].[Customers] ([Name], [Surname], [PhoneNumber])
-                                     VALUES (@Name,@Surname,@PhoneNumber)"
+        connection.Query<Customer>(@"INSERT INTO [dbo].[Customers] ([Name], [Surname], [PhoneNumber],[SoftDelete])                                     
+                                     VALUES (@Name,@Surname,@PhoneNumber,0)"
                                      ,new {entity.Name, entity.Surname, entity.PhoneNumber});
         return Task.CompletedTask;
     }
@@ -22,9 +22,10 @@ public class CustomerRepository : BaseSqlRepository,ICustomerRepository
     {
         using var connection = OpenConnection();
 
-        connection.Query<Customer>(@"DELETE FROM Customers
-                                     WHERE Id = @id", new { id })
-                                     .FirstOrDefault();        
+        connection.Query<Customer>(@"UPDATE Customers
+                                     SET SoftDelete = 1
+                                     WHERE Id = @id", new { id });
+                                           
         return Task.CompletedTask;
     }
 
@@ -32,7 +33,8 @@ public class CustomerRepository : BaseSqlRepository,ICustomerRepository
     {
         using var connection = OpenConnection();
 
-        List<Customer> customers = connection.Query<Customer>(@"SELECT * FROM [dbo].[Customers]").ToList();
+        List<Customer> customers = connection.Query<Customer>(@"SELECT * FROM [dbo].[Customers] WHERE SoftDelete = 0
+                                                                ORDER BY Id DESC").ToList();
         
         return Task.FromResult(customers);
     }

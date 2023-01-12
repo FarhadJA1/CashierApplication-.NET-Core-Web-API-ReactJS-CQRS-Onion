@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "5CoanwlsK4BrYv2T4o6aAjYnYsp1UanlgBzZQcwj5ylLwfdkFPk3yyAyU1H/0j/IPf+iP1y98aAp3sZ1D5FSaQ==",
+  "dgSpecHash": "tkixAoy1QDK4iA9wOLn77cXZH/uaauk0lvtYXnBCvMz3gIYFIsFHIzp7Uy/gdIwgX4e1DFiBWmKFGcPJz+RvwQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\ASUS\\Desktop\\Task - CashierApp\\Backend\\CashierApp\\Domain\\A.Domain.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\ASUS\\.nuget\\packages\\fluentvalidation\\11.4.0\\fluentvalidation.11.4.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.12\\microsoft.entityframeworkcore.6.0.12.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\6.0.12\\microsoft.entityframeworkcore.abstractions.6.0.12.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\6.0.12\\microsoft.entityframeworkcore.analyzers.6.0.12.nupkg.sha512",

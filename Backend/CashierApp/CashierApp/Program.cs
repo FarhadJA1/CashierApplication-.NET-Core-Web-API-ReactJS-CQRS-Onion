@@ -1,5 +1,6 @@
 using B.Repository;
 using C.Service;
+using D.CashierApp.Helpers.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddServiceLayer();
 builder.Services.SendAssemblyToMediatr(); //custom addmediatR method at services.DependencyInjection
 
 var app = builder.Build();
+
+app.UseExceptionMiddleware();
 
 if (app.Environment.IsDevelopment())
 {

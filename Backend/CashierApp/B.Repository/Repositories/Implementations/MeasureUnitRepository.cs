@@ -10,8 +10,8 @@ public class MeasureUnitRepository : BaseSqlRepository, IMeasureUnitRepository
     {
         using var connection = OpenConnection();
 
-        connection.Query<MeasureUnit>(@"INSERT INTO [dbo].[MeasureUnits] ([Name])
-                                        VALUES (@Name)",
+        connection.Query<MeasureUnit>(@"INSERT INTO [dbo].[MeasureUnits] ([Name],[SoftDelete])
+                                        VALUES (@Name,0)",
                                         new { entity.Name});
         return Task.CompletedTask;
     }
@@ -20,9 +20,10 @@ public class MeasureUnitRepository : BaseSqlRepository, IMeasureUnitRepository
     {
         using var connection = OpenConnection();
 
-        connection.Query<MeasureUnit>(@"DELETE FROM MeasureUnits
-                                        WHERE Id = @id", new { id })
-                                                      .FirstOrDefault();
+        connection.Query<MeasureUnit>(@"UPDATE MeasureUnits
+                                        SET SoftDelete = 1
+                                        WHERE Id = @id", new { id });
+                                                      
         return Task.CompletedTask;
     }
 
@@ -30,7 +31,9 @@ public class MeasureUnitRepository : BaseSqlRepository, IMeasureUnitRepository
     {
         using var connection = OpenConnection();
 
-        List<MeasureUnit> measureUnits = connection.Query<MeasureUnit>(@"SELECT * FROM [dbo].[MeasureUnits]").ToList();
+        List<MeasureUnit> measureUnits = connection.Query<MeasureUnit>(@"SELECT * FROM [dbo].[MeasureUnits]
+                                                                         WHERE SoftDelete = 0
+                                                                         ORDER BY Id DESC").ToList();
         return Task.FromResult(measureUnits);
     }
 

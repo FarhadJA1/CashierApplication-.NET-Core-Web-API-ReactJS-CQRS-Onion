@@ -9,8 +9,8 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
     {        
         using var connection = OpenConnection();
 
-        connection.Query<Product>(@"INSERT INTO [dbo].[Products] ([Name], [Barcode])
-                                    VALUES (@Name,@Barcode)",
+        connection.Query<Product>(@"INSERT INTO [dbo].[Products] ([Name], [Barcode],[SoftDelete])
+                                    VALUES (@Name,@Barcode,0)",
                                     new { entity.Name, entity.Barcode});
        
         return Task.CompletedTask;
@@ -19,7 +19,8 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
     public Task DeleteAsync(int id)
     {
         using var connection = OpenConnection();
-        connection.Query(@"DELETE FROM Products
+        connection.Query(@"UPDATE Products
+                           SET SoftDelete = 1
                            WHERE Id = @id 
                            DELETE FROM ProductProperties
                            WHERE ProductId = @id", new { id });
@@ -32,7 +33,7 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
     {
         using var connection = OpenConnection();
 
-        string sql = @"SELECT * FROM [dbo].[Products]";
+        string sql = @"SELECT * FROM [dbo].[Products] WHERE SoftDelete = 0";
 
         List<Product> products = connection.Query<Product>(sql).ToList();
 

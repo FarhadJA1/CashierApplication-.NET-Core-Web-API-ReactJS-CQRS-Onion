@@ -13,13 +13,19 @@ public class CustomerCreateCommandHandler : IRequestHandler<CreateCustomerComman
     }
     public async Task<CustomerCreateDTO> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
+        /*if (request.Name.Trim()=="" && request.Surname.Trim()=="" &&request.PhoneNumber.Trim()=="")
+        {
+            throw new Exception("Invalid input value");
+        }*/
+        
         CustomerCreateDTO customerCreateDTO = new()
         {
-            Name= request.Name,
-            Surname= request.Surname,
-            PhoneNumber= request.PhoneNumber                
+            Name = request.Name,
+            Surname = request.Surname,
+            PhoneNumber = request.PhoneNumber
         };
         await _customerService.CreateAsync(customerCreateDTO);
         return await Task.FromResult(customerCreateDTO);
+
     }
 }
