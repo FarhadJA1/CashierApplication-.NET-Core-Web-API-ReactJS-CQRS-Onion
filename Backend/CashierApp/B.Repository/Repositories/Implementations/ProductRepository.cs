@@ -1,6 +1,7 @@
 ﻿using B.Repository.Repositories.Interfaces;
 using Dapper;
 using Domain.Entities;
+using static Dapper.SqlMapper;
 
 namespace B.Repository.Repositories.Implementations;
 public class ProductRepository : BaseSqlRepository, IProductRepository
@@ -17,13 +18,30 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
         });       
     }
 
+    public Task CreateProductProperties(ProductProperty productProperty)
+    {
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
+
+            string sql = @"INSERT INTO [dbo].[ProductProperties] ([ProductId],[MeasureUnitId],[Barcode],[PurchasePrice]
+                                                                 ,[SellingPrice],[GrossPrice],[IsDefault])
+                                                          VALUES (@ProductId,@MeasureUnitId,@Barcode,@PurchasePrice,@SellingPrice,@GrossPrice,0)";
+
+            connection.Execute(sql, new { productProperty.ProductId, productProperty.Barcode,productProperty.MeasureUnitId
+                                         ,productProperty.PurchasePrice, productProperty.SellingPrice,productProperty.GrossPrice });
+        });
+    }
+
     public Task DeleteAsync(int id)
     {
         return Task.Run(() =>
         {
             using var connection = OpenConnection();
-            connection.Execute(@$"UPDATE Products SET SoftDelete = 1 WHERE Id = @id 
-                                  DELETE FROM ProductProperties WHERE ProductId = {id}");
+            var dbTransaction = connection.BeginTransaction();
+            connection.Execute(@$"UPDATE Products SET SoftDelete = 1 WHERE Id = {id} 
+                                  DELETE FROM ProductProperties WHERE ProductId = {id}",transaction: dbTransaction);
+            dbTransaction.Commit();
         });                                      
     }
 
@@ -44,10 +62,8 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
         return Task.Run(() =>
         {
             using var connection = OpenConnection();
-
             
-
-            string productSql = $"SELECT * FROM [dbo].[Products] product WHERE product.Id = {id}";
+            string productSql = $"SELECT * FROM [dbo].[Products] product WHERE product.Id = {id} AND SoftDelete = 0";
 
             string propertySql = @$"SELECT * FROM [dbo].[ProductProperties] property 
                                     INNER JOIN [dbo].[MeasureUnits] unit ON property.MeasureUnitId = unit.Id 
@@ -63,8 +79,6 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
 
             product.ProductProperties = productProperties;
 
-            
-
             return product;            
         });
         
@@ -77,18 +91,28 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
         {
             using var connection = OpenConnection();
 
-            var transaction = connection.BeginTransaction();
-
-            connection.Execute(@$"UPDATE ProductProperties SET IsDefault = @isDefault
-                                  WHERE ProductId = {productId} AND MeasureUnitId = {measureUnitId}");
-
+            
+                        
             if (isDefault == true)
             {
-                connection.Execute(@$"UPDATE ProductProperties SET IsDefault = 0 
-                                      WHERE ProductId = {productId} AND MeasureUnitId != {measureUnitId}");
+                var dbTransaction = connection.BeginTransaction();
+
+                connection.Execute(@$"UPDATE ProductProperties SET IsDefault = 1
+                                      WHERE ProductId = {productId} AND MeasureUnitId = {measureUnitId}
+
+                                      UPDATE ProductProperties SET IsDefault = 0 
+                                      WHERE ProductId = {productId} AND MeasureUnitId != {measureUnitId}", transaction: dbTransaction);
+
+
+                dbTransaction.Commit();
+            }
+            else
+            {
+                connection.Execute(@$"UPDATE ProductProperties SET IsDefault = 0
+                                  WHERE ProductId = {productId} AND MeasureUnitId = {measureUnitId}");
             }
 
-            transaction.Commit();
+            
         });
         
     }
@@ -107,7 +131,7 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
                                  SellingPrice = @SellingPrice, GrossPrice = @GrossPrice WHERE ProductId = @Id ",
 
                                  new{entity.Id,entity.Name,productProperty.MeasureUnitId,productProperty.PurchasePrice
-                                 ,productProperty.SellingPrice,productProperty.GrossPrice,productProperty.ProductId});
+                                 ,productProperty.SellingPrice,productProperty.GrossPrice,productProperty.ProductId},transaction);
 
             transaction.Commit();
         });

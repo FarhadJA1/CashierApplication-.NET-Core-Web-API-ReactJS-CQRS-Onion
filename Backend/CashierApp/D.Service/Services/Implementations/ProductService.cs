@@ -19,6 +19,12 @@ public class ProductService : IProductService
         await _productRepository.CreateAsync(_mapper.Map<Product>(createProductDTO));
     }
 
+    public async Task CreateProductPropertiesAsync(CreateProductPropertyDto createProductPropertyDto)
+    {
+        createProductPropertyDto.Barcode = Guid.NewGuid().ToString();
+        await _productRepository.CreateProductProperties(_mapper.Map<ProductProperty>(createProductPropertyDto));
+    }
+
     public async Task DeleteAsync(int id)
     {
         await _productRepository.DeleteAsync(id);

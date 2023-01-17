@@ -7,4 +7,6 @@ public interface IProductRepository:IRepository<Product>
     Task UpdateAsync(Product entity,ProductProperty productProperty);
     Task SetProductPropertyToDefaultAsync(int productId, int measureUnitId, bool isDefault);
 
+    Task CreateProductProperties(ProductProperty productProperty);
+
 }

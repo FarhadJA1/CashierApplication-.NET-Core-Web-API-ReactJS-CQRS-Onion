@@ -16,10 +16,15 @@ public class ProductController : BaseController
         _mediator = mediator;
     }
 
-    [HttpPost]
+    [HttpPost("Product")]
     public async Task<IActionResult> Create([FromBody] CreateProductCommand createProductCommand)
     {
         return Ok(await _mediator.Send(createProductCommand));
+    }
+    [HttpPost("ProductProperty")]
+    public async Task<IActionResult> Create([FromBody] CreateProductPropertyCommand createProductPropertyCommand)
+    {
+        return Ok(await _mediator.Send(createProductPropertyCommand));
     }
 
 
