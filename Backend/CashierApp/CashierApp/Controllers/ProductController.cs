@@ -22,6 +22,7 @@ public class ProductController : BaseController
         return Ok(await _mediator.Send(createProductCommand));
     }
 
+
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -59,12 +60,7 @@ public class ProductController : BaseController
         return Ok(await _mediator.Send(setProductPropertyDefaultCommand));
     }
 
-    [HttpGet("ProductProperty/{id}")]
-    public async Task<IActionResult> GetAllProductProperties([FromRoute] int id)
-    {
-        GetAllProductPropertiesByIdQuery getAllProductPropertiesByIdQuery = new() { Id=id };
-        return Ok(await _mediator.Send(getAllProductPropertiesByIdQuery));
-    }
+   
 
     
 

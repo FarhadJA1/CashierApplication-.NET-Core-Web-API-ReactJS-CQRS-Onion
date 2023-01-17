@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Entities;
 
-namespace B.Repository.Repositories.Interfaces
+namespace B.Repository.Repositories.Interfaces;
+
+public interface IAccountRepository
 {
-    public interface IAccountRepository
-    {
-    }
+    Task RegisterAsync(AppUser newUser);
+    Task<AppUser> LoginAsync(string username,string password);
 }

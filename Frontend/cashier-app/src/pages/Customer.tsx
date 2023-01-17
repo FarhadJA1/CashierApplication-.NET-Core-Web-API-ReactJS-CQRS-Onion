@@ -5,19 +5,25 @@ import axios from 'axios';
 import CreateCustomerModal from '../components/Customer/CreateCustomerModal';
 import * as Yup from 'yup';
 
+export interface IFormikValue{
+  firstName : string;
+  lastName : string;
+  phoneNumber : string | undefined
+}
+
 function Customer() {
   const url = 'https://localhost:44348';
   const [customers, setCustomers] = useState([]); 
   const [columns, setColumns] = useState<string[]>([]);
   const [id, setId] = useState(0);
   
-  const inputTypesForUpdateModal={
+  const inputTypesForUpdateModal : any={
     firstName:'First Name',
     lastName:'Last Name',
     phoneNumber:'Phone Number'
   }
 
-  const formikValues={
+  const formikValues:IFormikValue={
     firstName:'',
     lastName:'',
     phoneNumber:''
@@ -70,8 +76,7 @@ function Customer() {
 
   function UpdateCustomer(values:any) {
     debugger
-      console.log(values);
-      
+    console.log(values);      
   }
 
 
@@ -80,7 +85,7 @@ function Customer() {
       <div className='my-4 me-5' style={{display:'flex',justifyContent:'end'}}>
         <CreateCustomerModal createCustomer={CreateCustomer}/>
       </div>
-      <BasicTable updateData={UpdateCustomer}  validation={validation} delete={DeleteCustomer} id={id} setId={setId} datas={customers} columns={columns} 
+      <BasicTable updateData={UpdateCustomer} validation={validation} delete={DeleteCustomer} id={id} setId={setId} datas={customers} columns={columns} 
           inputTypes={inputTypesForUpdateModal} formikValues={formikValues}
       />
     </div>

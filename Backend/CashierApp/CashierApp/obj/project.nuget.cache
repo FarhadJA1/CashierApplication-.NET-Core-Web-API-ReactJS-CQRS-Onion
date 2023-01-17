@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "/LF07dYn0SVtc2jYarvaohBt7KI6bAoUDx3HJI7mbTkh87RzsPcBPVnTSHbYQuObZmD8hzIlaKkQxtX8omFJWQ==",
+  "dgSpecHash": "7PkDveylFs+c9ADJRGC2k5bqhGYUuSBfJfQSdIxve0/4LWWX3lDLCp/v24pKO/S3PoLSQ2VthETZlmwCY/MXMw==",
   "success": true,
   "projectFilePath": "C:\\Users\\ASUS\\Desktop\\Task - CashierApp\\Backend\\CashierApp\\CashierApp\\D.CashierApp.csproj",
   "expectedPackageFiles": [
@@ -12,6 +12,7 @@
     "C:\\Users\\ASUS\\.nuget\\packages\\mediatr\\11.1.0\\mediatr.11.1.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\mediatr.contracts\\1.0.1\\mediatr.contracts.1.0.1.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\mediatr.extensions.microsoft.dependencyinjection\\11.0.0\\mediatr.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.17\\microsoft.aspnetcore.authentication.jwtbearer.5.0.17.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.12\\microsoft.aspnetcore.cryptography.internal.6.0.12.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\6.0.12\\microsoft.aspnetcore.cryptography.keyderivation.6.0.12.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\6.0.12\\microsoft.aspnetcore.identity.entityframeworkcore.6.0.12.nupkg.sha512",

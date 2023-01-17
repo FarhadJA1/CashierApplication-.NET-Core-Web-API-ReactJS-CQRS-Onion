@@ -1,7 +1,7 @@
 ﻿using B.Repository.Repositories.Interfaces;
 using Dapper;
 using Domain.Entities;
-using Microsoft.Data.SqlClient;
+using System.Data;
 using static Dapper.SqlMapper;
 
 namespace B.Repository.Repositories.Implementations;
@@ -10,63 +10,57 @@ public class CustomerRepository : BaseSqlRepository,ICustomerRepository
 
     public Task CreateAsync(Customer entity)
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();           
+            
+            string sql = "INSERT INTO [dbo].[Customers] ([Name], [Surname], [PhoneNumber],[SoftDelete]) VALUES (@Name,@Surname,@PhoneNumber,0)";
 
-        connection.Query<Customer>(@"INSERT INTO [dbo].[Customers] ([Name], [Surname], [PhoneNumber],[SoftDelete])                                     
-                                     VALUES (@Name,@Surname,@PhoneNumber,0)"
-                                     ,new {entity.Name, entity.Surname, entity.PhoneNumber});
-        return Task.CompletedTask;
+            connection.Execute( sql , new { entity.Name, entity.Surname, entity.PhoneNumber });
+        });        
     }
 
     public Task DeleteAsync(int id)    
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        connection.Query<Customer>(@"UPDATE Customers
-                                     SET SoftDelete = 1
-                                     WHERE Id = @id", new { id });
-                                           
-        return Task.CompletedTask;
+            connection.Execute($"UPDATE Customers SET SoftDelete = 1 WHERE Id = {id}");
+        });        
     }
 
     public Task<List<Customer>> GetAllAsync()
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        List<Customer> customers = connection.Query<Customer>(@"SELECT * FROM [dbo].[Customers] WHERE SoftDelete = 0
-                                                                ORDER BY Id DESC").ToList();
-        
-        return Task.FromResult(customers);
-    }
+            return connection.Query<Customer>("SELECT * FROM [dbo].[Customers] WHERE SoftDelete = 0 ORDER BY Id DESC").ToList();            
+        });               
+    }    
 
     public Task<Customer> GetAsync(int id)
     {
-        using var connection = OpenConnection();
-
-        Customer? customer = connection.Query<Customer>(@"SELECT * FROM Customers
-                                                           WHERE Id = @id", new { id })
-                                                           .FirstOrDefault();       
-
-        if (customer != null)
+        return Task.Run(() => 
         {
-            return Task.FromResult(customer);
-        }
-        else
-        {
-            throw new NullReferenceException("Customer not found!");
-        }
-        
+            using var connection = OpenConnection();
 
+            return connection.QueryFirstOrDefault<Customer>($"SELECT TOP(1) * FROM Customers WHERE Id = {id} AND SoftDelete = 0");
+        });
     }
 
     public Task UpdateAsync(int id,Customer entity)
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        connection.Query<Customer>(@"UPDATE Customers
-                                     SET Name=@Name,Surname=@Surname,PhoneNumber=@PhoneNumber
-                                     WHERE Id=@id",new { entity.Name, entity.Surname, entity.PhoneNumber, id });
-    
-        return Task.CompletedTask;
+            string sql = @"UPDATE Customers
+                           SET Name = @Name,Surname = @Surname,PhoneNumber = @PhoneNumber
+                           WHERE Id = @id";
+
+            connection.Execute(sql, new { entity.Name, entity.Surname, entity.PhoneNumber, id });
+        });        
     }
 }

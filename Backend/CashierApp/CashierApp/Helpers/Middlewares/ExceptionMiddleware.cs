@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using C.Repository.Exceptions;
 using System.Net;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace D.CashierApp.Helpers.Middlewares
 {
@@ -21,6 +19,17 @@ namespace D.CashierApp.Helpers.Middlewares
             try
             {
                 await _next(httpContext);
+            }
+            catch (InvalidClientOperationException ex)
+            {
+
+                httpContext.Response.ContentType = "application/json";
+                httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                ErrorResponse errorResponse = new(httpContext.Response.StatusCode, "Client Error",ex.Message);
+
+                JsonSerializerOptions options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                string json = JsonSerializer.Serialize(errorResponse, options);
+                await httpContext.Response.WriteAsync(json);
             }
             catch (Exception)
             {

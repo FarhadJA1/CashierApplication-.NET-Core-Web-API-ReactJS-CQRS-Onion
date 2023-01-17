@@ -1,5 +1,6 @@
 ﻿using C.Service.CQRS.Queries.CustomerQueries;
 using C.Service.DTOs.CustomerDTOs;
+using C.Repository.Exceptions;
 using C.Service.Services.Interfaces;
 using MediatR;
 
@@ -13,6 +14,11 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
     }
     public async Task<CustomerGetDTO> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
     {
-        return await _customerService.GetByIdAsync(request.Id);
+        var customer = await _customerService.GetByIdAsync(request.Id);
+
+        if (customer is null)
+            throw new InvalidClientOperationException("Bu ID-də müştəri yoxdur");
+
+        return customer;
     }
 }

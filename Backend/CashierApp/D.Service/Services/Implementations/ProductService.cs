@@ -15,8 +15,7 @@ public class ProductService : IProductService
         _mapper = mapper;
     }
     public async Task CreateAsync(CreateProductDTO createProductDTO)
-    {
-        createProductDTO.Barcode = Guid.NewGuid().ToString();
+    {        
         await _productRepository.CreateAsync(_mapper.Map<Product>(createProductDTO));
     }
 
@@ -52,10 +51,6 @@ public class ProductService : IProductService
         await _productRepository.UpdateAsync(product, productProperty);
     }
 
-    public async Task<List<ProductPropertiesGetDto>> GetAllProductPropertiesById(int productId)
-    {
-        List<ProductProperty> productProperties = await _productRepository.GetAllProductPropertiesAsync(productId);
-        return _mapper.Map<List<ProductPropertiesGetDto>>(productProperties);
-    }
+   
     
 }

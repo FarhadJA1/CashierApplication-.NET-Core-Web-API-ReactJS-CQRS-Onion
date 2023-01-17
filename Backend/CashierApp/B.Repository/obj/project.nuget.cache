@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "HVam3rD0TmW06UOwbgIVAMyWFd7iP8KN4gAySjpHyu/4RUarfX8pu+MI6uIvOqkyf+rrf/OJwpmjTiY2YEJbEg==",
+  "dgSpecHash": "gYq233MPoKN3W14v2GHDSvn1KSz13u+mSbwxrYXBRS7+J/efmJ2pVmrrioSm5MtdbayjbBbJnqbtoxylCCsmXg==",
   "success": true,
   "projectFilePath": "C:\\Users\\ASUS\\Desktop\\Task - CashierApp\\Backend\\CashierApp\\B.Repository\\B.Repository.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ASUS\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\fluentvalidation\\11.4.0\\fluentvalidation.11.4.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.17\\microsoft.aspnetcore.authentication.jwtbearer.5.0.17.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.12\\microsoft.aspnetcore.cryptography.internal.6.0.12.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\6.0.12\\microsoft.aspnetcore.cryptography.keyderivation.6.0.12.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\6.0.12\\microsoft.aspnetcore.identity.entityframeworkcore.6.0.12.nupkg.sha512",

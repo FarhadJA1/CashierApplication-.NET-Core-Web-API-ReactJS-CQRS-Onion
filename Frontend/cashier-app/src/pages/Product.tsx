@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import BasicTable from '../lib/BasicTable/Table';
 import BarcodeGenerator from '../shared/BarcodeGenerator';
+import { IFormikValue } from './Customer';
 
 function Product() {
   const url = 'https://localhost:44348';
@@ -10,6 +11,12 @@ function Product() {
   const [columns, setColumns] = useState<string[]>([]);
   const [id,setId] = useState(0);
 
+
+  const formikValues:IFormikValue={
+    firstName:'',
+    lastName:'',
+    phoneNumber:''
+  }
 
   async function GetProducts() {
     await axios.get(`${url}/api/Product`)
@@ -37,7 +44,7 @@ function Product() {
   }, [])
   return (
     <div className='col-10'>
-      <BasicTable updateData={UpdateProduct} validation={{}} formikValues={{}} inputTypes={{}} delete={DeleteProduct} id={id} setId={setId} datas={products} columns={columns}/>
+      <BasicTable updateData={UpdateProduct} validation={{}} formikValues={formikValues} inputTypes={{}} delete={DeleteProduct} id={id} setId={setId} datas={products} columns={columns}/>
     </div>
   )
 }

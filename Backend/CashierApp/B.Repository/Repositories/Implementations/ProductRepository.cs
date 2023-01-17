@@ -6,121 +6,112 @@ namespace B.Repository.Repositories.Implementations;
 public class ProductRepository : BaseSqlRepository, IProductRepository
 {
     public Task CreateAsync(Product entity)
-    {        
-        using var connection = OpenConnection();
+    {
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        connection.Query<Product>(@"INSERT INTO [dbo].[Products] ([Name], [Barcode],[SoftDelete])
-                                    VALUES (@Name,@Barcode,0)",
-                                    new { entity.Name, entity.Barcode});
-       
-        return Task.CompletedTask;
+            string sql = "INSERT INTO [dbo].[Products] ([Name],[SoftDelete]) VALUES (@Name,0)";
+
+            connection.Execute(sql,new { entity.Name });
+        });       
     }
 
     public Task DeleteAsync(int id)
     {
-        using var connection = OpenConnection();
-        connection.Query(@"UPDATE Products
-                           SET SoftDelete = 1
-                           WHERE Id = @id 
-                           DELETE FROM ProductProperties
-                           WHERE ProductId = @id", new { id });
-        
-        return Task.CompletedTask;
-                                                      
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
+            connection.Execute(@$"UPDATE Products SET SoftDelete = 1 WHERE Id = @id 
+                                  DELETE FROM ProductProperties WHERE ProductId = {id}");
+        });                                      
     }
 
     public  Task<List<Product>> GetAllAsync()
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        string sql = @"SELECT * FROM [dbo].[Products] WHERE SoftDelete = 0";
+            string sql = @"SELECT * FROM [dbo].[Products] WHERE SoftDelete = 0";
 
-        List<Product> products = connection.Query<Product>(sql).ToList();
-
-        return Task.FromResult(products);
+            return connection.Query<Product>(sql).ToList();
+        });
     }
 
     public Task<Product> GetAsync(int id)
     {
-        using var connection = OpenConnection();
-
-        string sql = @"SELECT * FROM [dbo].[Products] product                        
-                       WHERE product.Id = @id                      
-                      ";
-
-        Product? product = connection.Query<Product>(sql, new { id }).FirstOrDefault(); 
-
-        if (product!=null)
+        return Task.Run(() =>
         {
-            return Task.FromResult(product);
-        }
-        else
-        {
-            throw new NullReferenceException("Product not found");
-        }
+            using var connection = OpenConnection();
+
+            
+
+            string productSql = $"SELECT * FROM [dbo].[Products] product WHERE product.Id = {id}";
+
+            string propertySql = @$"SELECT * FROM [dbo].[ProductProperties] property 
+                                    INNER JOIN [dbo].[MeasureUnits] unit ON property.MeasureUnitId = unit.Id 
+                                    WHERE property.ProductId = {id}";
+
+            Product product =  connection.QueryFirstOrDefault<Product>(productSql);
+
+            List<ProductProperty> productProperties = connection.Query<ProductProperty, MeasureUnit, ProductProperty>(propertySql, (x, y) =>
+            {
+                x.MeasureUnit = y;
+                return x;
+            }).ToList();
+
+            product.ProductProperties = productProperties;
+
+            
+
+            return product;            
+        });
+        
     }
 
    
     public Task SetProductPropertyToDefaultAsync(int productId, int measureUnitId, bool isDefault)
     {
-        using var connection = OpenConnection();
-
-        connection.Query(@"UPDATE ProductProperties
-                           SET IsDefault = @isDefault
-                           WHERE ProductId = @productId AND MeasureUnitId = @measureUnitId
-                           ", new { isDefault, productId ,measureUnitId});
-
-        if (isDefault==true)
+        return Task.Run(() =>
         {
-            connection.Query(@"UPDATE ProductProperties
-                           SET IsDefault = 0
-                           WHERE ProductId = @productId AND MeasureUnitId != @measureUnitId
-                           ", new { productId, measureUnitId });
-        }
-        return Task.CompletedTask;
+            using var connection = OpenConnection();
+
+            var transaction = connection.BeginTransaction();
+
+            connection.Execute(@$"UPDATE ProductProperties SET IsDefault = @isDefault
+                                  WHERE ProductId = {productId} AND MeasureUnitId = {measureUnitId}");
+
+            if (isDefault == true)
+            {
+                connection.Execute(@$"UPDATE ProductProperties SET IsDefault = 0 
+                                      WHERE ProductId = {productId} AND MeasureUnitId != {measureUnitId}");
+            }
+
+            transaction.Commit();
+        });
+        
     }
 
     public Task UpdateAsync(Product entity,ProductProperty productProperty)
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        connection.Query(@"UPDATE Products
-                           SET Name = @Name
-                           WHERE Id = @Id
+            var transaction = connection.BeginTransaction();
 
-                           UPDATE ProductProperties
-                           SET MeasureUnitId = @MeasureUnitId, PurchasePrice=@PurchasePrice,
-                               SellingPrice = @SellingPrice, GrossPrice = @GrossPrice
-                           WHERE ProductId = @Id
-                          ", new { entity.Id ,entity.Name , productProperty.MeasureUnitId, productProperty.PurchasePrice,
-                                   productProperty.SellingPrice, productProperty.GrossPrice, productProperty.ProductId });        
-      
+            connection.Execute(@"UPDATE Products SET Name = @Name WHERE Id = @Id
 
-        return Task.CompletedTask;
+                                 UPDATE ProductProperties SET MeasureUnitId = @MeasureUnitId, PurchasePrice=@PurchasePrice,
+                                 SellingPrice = @SellingPrice, GrossPrice = @GrossPrice WHERE ProductId = @Id ",
+
+                                 new{entity.Id,entity.Name,productProperty.MeasureUnitId,productProperty.PurchasePrice
+                                 ,productProperty.SellingPrice,productProperty.GrossPrice,productProperty.ProductId});
+
+            transaction.Commit();
+        });
     }
 
-    public Task<List<ProductProperty>> GetAllProductPropertiesAsync(int productId)
-    {
-        using var connection = OpenConnection();
-
-        string sql = @"SELECT * FROM [dbo].[ProductProperties] property INNER JOIN [dbo].[MeasureUnits] unit
-                       ON property.MeasureUnitId = unit.Id
-                       WHERE property.ProductId = @productId";
-
-        List<ProductProperty> productProperties = connection.Query<ProductProperty, MeasureUnit, ProductProperty>(sql, (x, y) =>
-        {
-            x.MeasureUnit = y;
-            return x;
-        },new { productId}).ToList();
-
-        if (productProperties != null)
-        {
-            return Task.FromResult(productProperties);
-        }
-        else
-        {
-            throw new NullReferenceException("Product Properties not found");
-        }
-    }
-
+    
 }

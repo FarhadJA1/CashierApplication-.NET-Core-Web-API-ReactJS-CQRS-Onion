@@ -14,6 +14,8 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(MappingProfile));
 
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IMeasureUnitService, MeasureUnitService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IInvoiceService, InvoiceService>();

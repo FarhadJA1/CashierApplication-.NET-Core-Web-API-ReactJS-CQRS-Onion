@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import BasicTable from '../lib/BasicTable/Table';
+import { IFormikValue } from './Customer';
 
 function MeasureUnit() {
   const url = 'https://localhost:44348';
@@ -22,6 +23,12 @@ function MeasureUnit() {
   }
 
 
+  const formikValues:IFormikValue={
+    firstName:'',
+    lastName:'',
+    phoneNumber:''
+  }
+
   function DeleteMeasureUnit() {
     axios.delete(`${url}/api/MeasureUnit/${id}`)
       .then(res => {
@@ -39,7 +46,7 @@ function MeasureUnit() {
   }, [])
   return (
     <div className='col-10'>
-      <BasicTable updateData={UpdateUnit} validation={{}} formikValues={{}} inputTypes={inputTypesForUpdateModal} delete={DeleteMeasureUnit} id={id} setId={setId} datas={units} columns={columns} />
+      <BasicTable updateData={UpdateUnit} validation={{}} formikValues={formikValues} inputTypes={inputTypesForUpdateModal} delete={DeleteMeasureUnit} id={id} setId={setId} datas={units} columns={columns} />
     </div>
   )
 }

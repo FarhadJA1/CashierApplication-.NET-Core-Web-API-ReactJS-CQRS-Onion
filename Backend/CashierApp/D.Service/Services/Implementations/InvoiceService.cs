@@ -17,24 +17,30 @@ public class InvoiceService : IInvoiceService
         _invoiceRepository = invoiceRepository;
         _mapper = mapper;
     }
-    public async Task CreateInvoiceAsync(CreateInvoiceDTO createInvoice,CreateInvoiceDetailsDTO createInvoiceDetailsDTO)
+    public async Task<bool> CreateInvoiceAsync(CreateInvoiceDTO createInvoice)
     {
         switch (createInvoice.InvoiceType)
         {
             case 1:
-                await _invoiceRepository.CreateAsync(_mapper.Map<SellingInvoice>(createInvoice)
-                                            , _mapper.Map<InvoiceDetail>(createInvoiceDetailsDTO));
-                break;
+
+                await _invoiceRepository.CreateAsync(_mapper.Map<SellingInvoice>(createInvoice));
+                return true;
+
             case 2:
-                await _invoiceRepository.CreateAsync(_mapper.Map<ReturnInvoice>(createInvoice)
-                                           , _mapper.Map<InvoiceDetail>(createInvoiceDetailsDTO));
-                break;
+                VwInvoice dbInvoice = await _invoiceRepository.GetInvoiceByCustomerAndUser(createInvoice.CustomerId, createInvoice.UserId);
+
+                if (dbInvoice != null)
+                {
+                    await _invoiceRepository.CreateAsync(_mapper.Map<ReturnInvoice>(createInvoice));
+                    return true;
+                }
+                return false;
+                
             case 3:
-                await _invoiceRepository.CreateAsync(_mapper.Map<ImportInvoice>(createInvoice)
-                                            , _mapper.Map<InvoiceDetail>(createInvoiceDetailsDTO));
-                break;               
+                await _invoiceRepository.CreateAsync(_mapper.Map<ImportInvoice>(createInvoice));
+                return true;
             default:
-                throw new Exception("Bad Request");                
+                return false;                
         }
     }
 

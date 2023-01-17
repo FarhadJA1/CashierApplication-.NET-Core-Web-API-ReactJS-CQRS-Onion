@@ -10,6 +10,7 @@ import DetailsModal from '../Modals/DetailsModal';
 import BarcodeGenerator from '../../shared/BarcodeGenerator';
 import DeleteModal from '../Modals/DeleteModal';
 import UpdateModal from '../Modals/UpdateModal';
+import { IFormikValue } from '../../pages/Customer';
 
 function SplitStringInCondition(str: string) {
   return str.split(/(?=[A-Z])/).join(' ');
@@ -23,13 +24,11 @@ type BasicTableProps = {
   delete:()=>void
 
   inputTypes:object,
-  formikValues:object,
-  validation:object
+  formikValues:IFormikValue,
+  validation:object,
   updateData:(values:any)=>void
 
 }
-
-
 
 
 export default function BasicTable(props: BasicTableProps) {
@@ -48,7 +47,6 @@ export default function BasicTable(props: BasicTableProps) {
                 return <TableCell sx={{height: '60px'}} key={thKey++} align='center'>{column[0].toUpperCase() +
                   SplitStringInCondition(column.slice(1))}</TableCell>
               }
-
             })}
             <TableCell align='center'>
               Settings

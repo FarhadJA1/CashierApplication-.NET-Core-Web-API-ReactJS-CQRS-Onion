@@ -8,62 +8,51 @@ public class MeasureUnitRepository : BaseSqlRepository, IMeasureUnitRepository
 {
     public Task CreateAsync(MeasureUnit entity)
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        connection.Query<MeasureUnit>(@"INSERT INTO [dbo].[MeasureUnits] ([Name],[SoftDelete])
-                                        VALUES (@Name,0)",
-                                        new { entity.Name});
-        return Task.CompletedTask;
+            connection.Execute(@"INSERT INTO [dbo].[MeasureUnits] ([Name],[SoftDelete])VALUES (@Name,0)",new { entity.Name });
+        });
     }
 
     public Task DeleteAsync(int id)
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        connection.Query<MeasureUnit>(@"UPDATE MeasureUnits
-                                        SET SoftDelete = 1
-                                        WHERE Id = @id", new { id });
-                                                      
-        return Task.CompletedTask;
+            connection.Execute(@$"UPDATE MeasureUnits SET SoftDelete = 1 WHERE Id = {id}");
+        });        
     }
 
     public Task<List<MeasureUnit>> GetAllAsync()
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        List<MeasureUnit> measureUnits = connection.Query<MeasureUnit>(@"SELECT * FROM [dbo].[MeasureUnits]
-                                                                         WHERE SoftDelete = 0
-                                                                         ORDER BY Id DESC").ToList();
-        return Task.FromResult(measureUnits);
+            return connection.Query<MeasureUnit>(@"SELECT * FROM [dbo].[MeasureUnits] WHERE SoftDelete = 0 ORDER BY Id DESC").ToList();
+        });
     }
 
     public Task<MeasureUnit> GetAsync(int id)
     {
-        using var connection = OpenConnection();
-
-        MeasureUnit? measureUnit = connection.Query<MeasureUnit>(@"SELECT * FROM MeasureUnits
-                                                                   WHERE Id = @id", new { id })
-                                                                   .FirstOrDefault();
-        
-
-        if (measureUnit != null)
+        return Task.Run(() =>
         {
-            return Task.FromResult(measureUnit);
-        }
-        else
-        {
-            throw new NullReferenceException("Measure Unit not found!");
-        }
+            using var connection = OpenConnection();
+
+            return connection.QueryFirstOrDefault<MeasureUnit>(@$"SELECT * FROM MeasureUnits WHERE Id = {id} AND SoftDelete = 0");
+        });                  
     }
 
     public Task UpdateAsync(int id, MeasureUnit entity)
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        connection.Query<MeasureUnit>(@"UPDATE MeasureUnits
-                                        SET Name = @Name
-                                        WHERE Id = @id", 
-                                        new { entity.Name,id });        
-        return Task.CompletedTask;
+            connection.Execute(@"UPDATE MeasureUnits SET Name = @Name WHERE Id = @id", new { entity.Name, id });
+        });
     }
 }

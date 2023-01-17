@@ -1,6 +1,7 @@
 ﻿using A.Domain.Common;
 using A.Domain.Entities;
 using AutoMapper;
+using C.Service.DTOs.AccountDtos;
 using C.Service.DTOs.CustomerDTos;
 using C.Service.DTOs.CustomerDTOs;
 using C.Service.DTOs.InvoiceDTOs;
@@ -35,5 +36,7 @@ public class MappingProfile : Profile
         CreateMap<VwInvoice,InvoiceGetDTO>();
         CreateMap<InvoiceDetail, InvoiceDetailsGetDTO>();
         CreateMap<InvoiceDetail,CreateInvoiceDetailsDTO>().ReverseMap();
+            
+        CreateMap<AppUser, LoginDto>();
     }
 }

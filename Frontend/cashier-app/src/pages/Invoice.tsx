@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import BasicTable from '../lib/BasicTable/Table';
+import { IFormikValue } from './Customer';
 
 
 
@@ -10,6 +11,12 @@ function Invoice() {
   const [invoices, setInvoices] = useState([]);
   const [columns, setColumns] = useState<string[]>([]);
   const [id,setId] = useState(0);
+
+  const formikValues:IFormikValue={
+    firstName:'',
+    lastName:'',
+    phoneNumber:''
+  }
 
   async function GetInvoices() {
     await axios.get(`${url}/api/Invoice`)
@@ -35,7 +42,7 @@ function Invoice() {
   }, [])
   return (
     <div className='col-10'>
-      <BasicTable updateData={UpdateInvoice} validation={{}} formikValues={{}} inputTypes={{}} delete={DeleteInvoice} id={id} setId={setId} datas={invoices} columns={columns}/>
+      <BasicTable updateData={UpdateInvoice} validation={{}} formikValues={formikValues} inputTypes={{}} delete={DeleteInvoice} id={id} setId={setId} datas={invoices} columns={columns}/>
     </div>
   )
 }

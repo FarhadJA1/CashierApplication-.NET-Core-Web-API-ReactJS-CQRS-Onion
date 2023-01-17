@@ -16,7 +16,15 @@ public class InvoiceController : BaseController
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateInvoiceCommand createImportInvoiceCommand)
     {
-        return Ok(await _mediator.Send(createImportInvoiceCommand));
+        if (ModelState.IsValid)
+        {
+            return Ok(await _mediator.Send(createImportInvoiceCommand));
+        }
+        else
+        {
+            return BadRequest("Not all the fields filled properly");
+        }
+        
     }
 
     [HttpGet("{type?}")]
@@ -28,14 +36,34 @@ public class InvoiceController : BaseController
             InvoiceType invoiceType = (InvoiceType)type;
             getAllInvoicesQuery.InvoiceType = invoiceType;
         }
-        
-        return Ok(await _mediator.Send(getAllInvoicesQuery));
+
+        var result = await _mediator.Send(getAllInvoicesQuery);
+
+        if (result.Count>0)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return NotFound("No invoice was found");
+        }
+       
     }
 
     [HttpGet("InvoiceDetails/{id}")]
     public async Task<IActionResult> GetAllInvoiceDetails([FromRoute] int id)
     {
         GetInvoiceDetailsByIdQuery getInvoiceDetailsByIdQuery = new() { Id= id };
-        return Ok(await _mediator.Send(getInvoiceDetailsByIdQuery));
+
+        var result = await _mediator.Send(getInvoiceDetailsByIdQuery);
+
+        if (result.Count>0)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return NotFound("No invoice was found");
+        }
     }
 }
