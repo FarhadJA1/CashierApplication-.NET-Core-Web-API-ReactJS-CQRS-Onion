@@ -5,9 +5,12 @@ using C.Service.CQRS.Queries.ProductQueries;
 using C.Service.DTOs.MeasureUnitDTOs;
 using C.Service.DTOs.ProductDTOs;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace D.CashierApp.Controllers;
+
+[Authorize]
 public class ProductController : BaseController
 {
     private readonly IMediator _mediator;

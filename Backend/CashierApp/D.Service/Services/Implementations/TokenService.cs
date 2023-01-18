@@ -32,7 +32,7 @@ public class TokenService : ITokenService
 
         var token = new JwtSecurityToken(
             _configuration["Jwt:Audience"],
-            _configuration["JwtIssuer"],
+            _configuration["Jwt:Issuer"],
             claims,
             expires: expires,
             signingCredentials: creds

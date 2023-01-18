@@ -32,8 +32,6 @@ public class AccountRepository : BaseSqlRepository, IAccountRepository
                 throw new InvalidClientOperationException("This username already exists");
                 
             }
-            
-            
         });       
     }
     

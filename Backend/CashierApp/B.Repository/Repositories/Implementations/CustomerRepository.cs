@@ -1,10 +1,11 @@
 ﻿using B.Repository.Repositories.Interfaces;
 using Dapper;
 using Domain.Entities;
-using System.Data;
 using static Dapper.SqlMapper;
 
 namespace B.Repository.Repositories.Implementations;
+
+
 public class CustomerRepository : BaseSqlRepository,ICustomerRepository
 {
 
@@ -36,7 +37,9 @@ public class CustomerRepository : BaseSqlRepository,ICustomerRepository
         {
             using var connection = OpenConnection();
 
-            return connection.Query<Customer>("SELECT * FROM [dbo].[Customers] WHERE SoftDelete = 0 ORDER BY Id DESC").ToList();            
+            var result = connection.Query<Customer>("SELECT * FROM [dbo].[Customers] WHERE SoftDelete = 0 ORDER BY Id DESC").ToList();      
+                        
+            return result;
         });               
     }    
 

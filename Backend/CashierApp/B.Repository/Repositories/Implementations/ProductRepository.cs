@@ -1,4 +1,5 @@
 ﻿using B.Repository.Repositories.Interfaces;
+using C.Repository.Exceptions;
 using Dapper;
 using Domain.Entities;
 using static Dapper.SqlMapper;
@@ -84,7 +85,7 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
         
     }
 
-   
+
     public Task SetProductPropertyToDefaultAsync(int productId, int measureUnitId, bool isDefault)
     {
         return Task.Run(() =>
@@ -137,5 +138,23 @@ public class ProductRepository : BaseSqlRepository, IProductRepository
         });
     }
 
-    
+    public  Task<ProductProperty> GetProductPropertiesByUnitId(int productId, int measureUnitId)
+    {
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
+
+            string propertySql = @$"SELECT * FROM [dbo].[ProductProperties] property                                     
+                                    WHERE property.ProductId = {productId} AND property.MeasureUnitId = {measureUnitId}";
+
+            var result = connection.QueryFirstOrDefault<ProductProperty>(propertySql);
+
+            if (result == null)
+                throw new InvalidClientOperationException("No Product Property were found");
+
+            return result;
+        });       
+    }
+
+
 }

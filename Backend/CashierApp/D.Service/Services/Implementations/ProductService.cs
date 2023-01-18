@@ -41,7 +41,7 @@ public class ProductService : IProductService
         Product product = await _productRepository.GetAsync(id);
         return _mapper.Map<ProductGetDTO>(product);
     }
-
+   
     public async Task SetProductPropertyToDefaultAsync(int productId, int measureUnitId,bool isDefault)
     {
         await _productRepository.SetProductPropertyToDefaultAsync(productId,measureUnitId, isDefault);
@@ -57,6 +57,13 @@ public class ProductService : IProductService
         await _productRepository.UpdateAsync(product, productProperty);
     }
 
-   
-    
+    public async Task<ProductPropertiesGetDto> GetProductPropertiesByUnitId(int productId, int measureUnitId)
+    {
+        ProductProperty productProperty = await _productRepository.GetProductPropertiesByUnitId(productId, measureUnitId);
+        return _mapper.Map<ProductPropertiesGetDto>(productProperty);
+    }
+
+
+
+
 }

@@ -2,6 +2,7 @@
 using A.Domain.Entities;
 using A.Domain.Enum;
 using B.Repository.Repositories.Interfaces;
+using C.Repository.Exceptions;
 using Dapper;
 using Domain.Entities;
 
@@ -21,10 +22,14 @@ public class InvoiceRepository : BaseSqlRepository , IInvoiceRepository
                                 OUTPUT Inserted.Id VALUES  (@CreationDate,@UserId,@CustomerId,@InvoiceType)";
 
             int invoiceId = connection.ExecuteScalar<int>(sqlInsert, new { entity.CreationDate, entity.UserId, entity.CustomerId, entity.InvoiceType }, transaction);
-                       
-            connection.Execute(@"INSERT INTO [dbo].[InvoiceDetails] ([InvoiceId],[ProductPropertiesId],[Price],[MeasureId],[Quantity])
+
+            foreach (var detail in entity.Details)
+            {
+                connection.Execute(@"INSERT INTO [dbo].[InvoiceDetails] ([InvoiceId],[ProductPropertiesId],[Price],[MeasureId],[Quantity])
                                             VALUES (@invoiceId,@ProductPropertiesId,@Price,@MeasureId,@Quantity)"
-                                            , new{ invoiceId,entity.Details }, transaction);            
+                                            , new { invoiceId, detail.ProductPropertiesId,detail.Price,detail.MeasureId,detail.Quantity }, transaction);
+            }
+                      
 
             transaction.Commit();
         });
@@ -41,7 +46,12 @@ public class InvoiceRepository : BaseSqlRepository , IInvoiceRepository
             {
                 string sql = @"SELECT Id Id,CreationDate CreationDate,UserId UserId,CustomerId CustomerId,InvoiceType InvoiceTypePtr 
                            FROM [dbo].[Invoices]";
-                return connection.Query<VwInvoice>(sql).ToList();                
+                var result = connection.Query<VwInvoice>(sql).ToList();
+
+                if (result.Count == 0)
+                    throw new InvalidClientOperationException("No invoices were found");
+
+                return result;
             }
             else
             {
@@ -49,7 +59,11 @@ public class InvoiceRepository : BaseSqlRepository , IInvoiceRepository
                            FROM [dbo].[Invoices]                           
                            WHERE InvoiceType = @type";
 
-                return connection.Query<VwInvoice>(sql, new { type }).ToList();          
+                var result = connection.Query<VwInvoice>(sql, new { type }).ToList();
+                if (result.Count == 0)
+                    throw new InvalidClientOperationException("No invoices were found");
+
+                return result;
             }
         });
         
@@ -64,19 +78,30 @@ public class InvoiceRepository : BaseSqlRepository , IInvoiceRepository
             string sql = @$"SELECT * FROM [dbo].[Invoices] i 
                             WHERE i.CustomerId = {customerId} AND i.userId = {userId}";
 
-            return connection.QueryFirstOrDefault<VwInvoice>(sql);
+            var result = connection.QueryFirstOrDefault<VwInvoice>(sql);
+
+            if(result==null)
+                throw new InvalidClientOperationException("No invoices were found");
+            return result;
         });
     }
 
     public Task<List<InvoiceDetail>> GetInvoiceDetailsAsync(int id)
     {
-        using var connection = OpenConnection();
+        return Task.Run(() =>
+        {
+            using var connection = OpenConnection();
 
-        string sql = @$"SELECT * FROM [dbo].[InvoiceDetails] detail
+            string sql = @$"SELECT * FROM [dbo].[InvoiceDetails] detail
                        WHERE detail.InvoiceId = {id}";
 
-        List<InvoiceDetail> invoiceDetails = connection.Query<InvoiceDetail>(sql).ToList();
+            var result = connection.Query<InvoiceDetail>(sql).ToList();
 
-        return Task.FromResult(invoiceDetails);
+            if (result.Count == 0)
+                throw new InvalidClientOperationException("No invoices were found");
+
+            return result;
+        });
+        
     }
 }

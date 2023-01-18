@@ -1,4 +1,5 @@
 ﻿using B.Repository.Repositories.Interfaces;
+using C.Repository.Exceptions;
 using Dapper;
 using Domain.Entities;
 using Microsoft.Data.SqlClient;
@@ -32,7 +33,12 @@ public class MeasureUnitRepository : BaseSqlRepository, IMeasureUnitRepository
         {
             using var connection = OpenConnection();
 
-            return connection.Query<MeasureUnit>(@"SELECT * FROM [dbo].[MeasureUnits] WHERE SoftDelete = 0 ORDER BY Id DESC").ToList();
+            var result = connection.Query<MeasureUnit>(@"SELECT * FROM [dbo].[MeasureUnits] WHERE SoftDelete = 0 ORDER BY Id DESC").ToList();
+
+            if (result.Count == 0)
+                throw new InvalidClientOperationException("No measure unit was found");
+
+            return result;
         });
     }
 
@@ -42,7 +48,12 @@ public class MeasureUnitRepository : BaseSqlRepository, IMeasureUnitRepository
         {
             using var connection = OpenConnection();
 
-            return connection.QueryFirstOrDefault<MeasureUnit>(@$"SELECT * FROM MeasureUnits WHERE Id = {id} AND SoftDelete = 0");
+            var result = connection.QueryFirstOrDefault<MeasureUnit>(@$"SELECT * FROM MeasureUnits WHERE Id = {id} AND SoftDelete = 0");
+
+            if (result==null)
+                throw new InvalidClientOperationException("No measure unit was found");
+
+            return result;
         });                  
     }
 

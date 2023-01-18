@@ -2,10 +2,12 @@
 using C.Service.CQRS.Commands.InvoiceCommands;
 using C.Service.CQRS.Queries.InvoiceQueries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace D.CashierApp.Controllers;
 
+[Authorize]
 public class InvoiceController : BaseController
 {
     private readonly IMediator _mediator;

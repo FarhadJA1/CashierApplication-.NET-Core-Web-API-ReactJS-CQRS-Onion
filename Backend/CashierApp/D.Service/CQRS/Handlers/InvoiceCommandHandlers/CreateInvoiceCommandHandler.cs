@@ -7,9 +7,11 @@ namespace C.Service.CQRS.Handlers.InvoiceCommandHandlers;
 public class CreateImportInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,bool>
 {
     private readonly IInvoiceService _invoiceService;
-    public CreateImportInvoiceCommandHandler(IInvoiceService invoiceService)
+    private readonly IProductService _productService;
+    public CreateImportInvoiceCommandHandler(IInvoiceService invoiceService, IProductService productService)
     {
         _invoiceService = invoiceService;
+        _productService = productService;
     }
     public async Task<bool> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
@@ -23,14 +25,16 @@ public class CreateImportInvoiceCommandHandler : IRequestHandler<CreateInvoiceCo
 
         List<CreateInvoiceDetailsDTO> detailsDTOs = new List<CreateInvoiceDetailsDTO>();
 
-        foreach (var id in request.Products)
+        foreach (var product in request.Products)
         {
+            var productProperty = await _productService.GetProductPropertiesByUnitId(product.ProductId, product.MeasureUnitId);
+
             CreateInvoiceDetailsDTO createInvoiceDetailsDTO = new()
             {
-                ProductId = id,
-                Price = request.Price,
-                MeasureId = request.MeasureId,
-                Quantity = request.Quantity,
+                ProductPropertiesId = productProperty.Id,
+                Price = productProperty.SellingPrice,
+                MeasureId = product.MeasureUnitId,
+                Quantity = product.Quantity,
             };
             detailsDTOs.Add(createInvoiceDetailsDTO);
         }

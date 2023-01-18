@@ -6,9 +6,12 @@ using C.Service.DTOs.CustomerDTos;
 using C.Service.DTOs.CustomerDTOs;
 using C.Service.DTOs.MeasureUnitDTOs;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace D.CashierApp.Controllers;
+
+[Authorize]
 public class MeasureUnitController : BaseController
 {
     private readonly IMediator _mediator;
